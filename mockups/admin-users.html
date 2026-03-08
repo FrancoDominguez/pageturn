@@ -3,591 +3,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PageTurn — Admin: Users</title>
+    <title>PageTurn Admin — Users</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; display: flex; flex-direction: column; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Nav */
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 13px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── NAV ─── */
         .nav {
             background: #0d1117;
-            padding: 0 48px;
-            height: 72px;
+            height: 48px;
             display: flex;
             align-items: center;
+            padding: 0 20px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            z-index: 200;
+            border-bottom: 1px solid rgba(255,255,255,.06);
         }
         .nav-logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 18px;
             color: #fff;
             text-decoration: none;
             letter-spacing: -0.5px;
-            flex-shrink: 0;
         }
-        .nav-logo .turn {
+        .nav-logo span {
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .nav-right {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
         .admin-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 700;
-            background: rgba(255,107,107,.15);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
             color: #ff6b6b;
-            letter-spacing: 0.3px;
+            background: rgba(255,107,107,.12);
+            padding: 3px 8px;
+            border-radius: 4px;
         }
         .nav-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 11px;
             color: #fff;
             cursor: pointer;
         }
 
-        /* Layout */
+        /* ─── LAYOUT ─── */
         .layout {
             display: flex;
             flex: 1;
         }
 
-        /* Sidebar */
+        /* ─── SIDEBAR (collapsed icon-only) ─── */
         .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e5e5;
-            padding: 32px 0;
+            width: 48px;
+            background: #1e2330;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding-top: 12px;
             position: sticky;
-            top: 72px;
-            height: calc(100vh - 72px);
+            top: 48px;
+            height: calc(100vh - 48px);
             flex-shrink: 0;
+            z-index: 150;
+            transition: width .2s cubic-bezier(.4,0,.2,1);
+            overflow: hidden;
         }
-        .sidebar-links {
+        .sidebar:hover {
+            width: 200px;
+            box-shadow: 4px 0 24px rgba(0,0,0,.15);
+        }
+        .sidebar-nav {
             list-style: none;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            padding: 0 12px;
-            flex: 1;
+            gap: 2px;
         }
-        .sidebar-links a {
+        .sidebar-nav li a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(13,17,23,.55);
+            height: 40px;
+            padding: 0 14px;
+            color: rgba(255,255,255,.4);
             text-decoration: none;
-            transition: all .15s;
-        }
-        .sidebar-links a:hover {
-            background: #fafafa;
-            color: #0d1117;
-        }
-        .sidebar-links a.active {
-            background: rgba(255,107,107,.06);
-            color: #ff6b6b;
-            font-weight: 700;
-        }
-        .sidebar-links a svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-        .sidebar-back {
-            padding: 0 12px;
-            margin-top: auto;
-        }
-        .sidebar-back a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
-            color: rgba(13,17,23,.45);
-            text-decoration: none;
+            white-space: nowrap;
             transition: all .15s;
+            border-left: 2px solid transparent;
         }
-        .sidebar-back a:hover {
-            background: #fafafa;
-            color: #0d1117;
+        .sidebar-nav li a:hover {
+            color: rgba(255,255,255,.8);
+            background: rgba(255,255,255,.04);
+        }
+        .sidebar-nav li a.active {
+            color: #fff;
+            background: rgba(255,255,255,.06);
+            border-left-color: #ff6b6b;
+        }
+        .sidebar-nav li a svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        .sidebar-nav li a .sidebar-label {
+            opacity: 0;
+            transition: opacity .15s;
+        }
+        .sidebar:hover .sidebar-label {
+            opacity: 1;
         }
 
-        /* Main content */
-        .main-content {
+        /* ─── MAIN CONTENT ─── */
+        .main {
             flex: 1;
-            padding: 40px 48px 60px;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Page header */
-        .page-header {
+        /* ─── KPI BAR ─── */
+        .kpi-bar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 24px;
-            margin-bottom: 32px;
+            padding: 0;
         }
-        .page-header h1 {
+        .kpi-item {
+            flex: 1;
+            padding: 14px 24px;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .kpi-item:last-child {
+            border-right: none;
+        }
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .kpi-value {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 30px;
-            letter-spacing: -0.5px;
+            font-size: 24px;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
         }
-        .page-header p {
-            color: rgba(13,17,23,.5);
-            font-size: 15px;
-            margin-top: 6px;
-        }
-        .search-input {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 50px;
-            padding: 10px 20px;
-            gap: 10px;
-            min-width: 300px;
-            transition: border-color .15s;
-        }
-        .search-input:focus-within {
-            border-color: #ff6b6b;
-        }
-        .search-input svg {
-            flex-shrink: 0;
-            color: rgba(13,17,23,.35);
-        }
-        .search-input input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            font-family: 'DM Sans', sans-serif;
-            color: #0d1117;
-            background: transparent;
-        }
-        .search-input input::placeholder {
-            color: rgba(13,17,23,.35);
+        .kpi-value.coral { color: #ff6b6b; }
+        .kpi-value.green { color: #10b981; }
+        .kpi-value.muted { color: #9ca3af; }
+        .kpi-value.blue { color: #3b82f6; }
+        .kpi-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: -1px;
         }
 
-        /* Table */
-        .table-card {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 16px;
-            overflow: hidden;
+        /* ─── CONTENT AREA ─── */
+        .content-area {
+            padding: 20px 32px 40px;
         }
+
+        /* ─── CONTROLS ROW ─── */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 24px;
+        }
+        .filter-tab {
+            background: none;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0 0 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: all .15s;
+        }
+        .filter-tab:hover {
+            color: #374151;
+        }
+        .filter-tab.active {
+            color: #111827;
+            font-weight: 700;
+            border-bottom-color: #111827;
+        }
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .search-input {
+            width: 240px;
+            height: 32px;
+            padding: 0 10px 0 32px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: #111827;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 10px center no-repeat;
+            outline: none;
+            transition: border-color .15s;
+        }
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+        }
+
+        /* ─── TABLE ─── */
         table {
             width: 100%;
             border-collapse: collapse;
+            background: #fff;
+            border-radius: 0;
         }
         thead th {
-            text-align: left;
-            padding: 14px 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            color: rgba(13,17,23,.45);
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #e5e5e5;
-            background: #fafafa;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: transparent;
+            white-space: nowrap;
+            user-select: none;
         }
-        thead th:first-child { padding-left: 24px; }
-        thead th:last-child { padding-right: 24px; }
-        tbody tr {
+        thead th.sortable {
             cursor: pointer;
-            transition: background .12s;
+        }
+        thead th.sortable:hover {
+            color: #374151;
+        }
+        .sort-arrows {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            margin-left: 3px;
+            line-height: 1;
+            font-size: 8px;
+            color: #d1d5db;
+            position: relative;
+            top: -1px;
+        }
+        .sort-arrows .up,
+        .sort-arrows .down {
+            line-height: 7px;
+        }
+        thead th.sorted-asc .sort-arrows .up,
+        thead th.sorted-desc .sort-arrows .down {
+            color: #374151;
+        }
+        thead th.align-right {
+            text-align: right;
+        }
+        tbody tr {
+            position: relative;
+            transition: background .1s;
+            border-left: 2px solid transparent;
+            cursor: pointer;
         }
         tbody tr:hover {
-            background: #f0f4ff !important;
-        }
-        tbody tr:nth-child(even) {
-            background: #fafafa;
+            border-left-color: #ff6b6b;
+            background: rgba(255,107,107,.015);
         }
         tbody td {
-            padding: 16px 20px;
-            font-size: 14px;
-            border-bottom: 1px solid rgba(229,229,229,.5);
+            padding: 0 12px;
+            height: 44px;
+            font-size: 13px;
+            border-bottom: 1px solid #f3f4f6;
             vertical-align: middle;
         }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody td:first-child { padding-left: 24px; }
-        tbody td:last-child { padding-right: 24px; }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        tbody td.align-right {
+            text-align: right;
+        }
 
-        /* User cell */
-        .user-cell {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 13px;
-            color: #fff;
-            flex-shrink: 0;
-        }
+        /* Name column */
         .user-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            font-size: 14px;
-            letter-spacing: -0.2px;
-        }
-        .user-email {
-            font-size: 13px;
-            color: rgba(13,17,23,.45);
-            margin-top: 2px;
+            font-weight: 500;
+            color: #111827;
         }
 
-        /* Role badges */
-        .role-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
+        /* Email column */
+        .email-text {
+            color: #9ca3af;
         }
+
+        /* Role column */
         .role-admin {
-            background: linear-gradient(135deg, rgba(255,107,107,.12), rgba(76,201,240,.12));
             color: #ff6b6b;
         }
         .role-user {
-            background: rgba(13,17,23,.06);
-            color: rgba(13,17,23,.5);
+            color: #9ca3af;
         }
 
-        /* Fines */
-        .fine-amount {
+        /* Fines column */
+        .amount {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 600;
-            font-size: 14px;
-            text-align: right;
-        }
-        .fine-coral {
-            color: #ff6b6b;
-        }
-        .fine-coral-bold {
-            color: #ff6b6b;
-            font-weight: 700;
-        }
-        .fine-zero {
-            color: rgba(13,17,23,.3);
-        }
-
-        /* Date */
-        .date-cell {
-            white-space: nowrap;
-            color: rgba(13,17,23,.6);
             font-size: 13px;
+            font-variant-numeric: tabular-nums;
         }
 
-        /* Pagination */
-        .pagination {
+        /* Muted number */
+        .num-muted {
+            color: #9ca3af;
+        }
+
+        /* Date column */
+        .date-text {
+            color: #9ca3af;
+        }
+
+        /* Dash for zero fines */
+        .fine-dash {
+            color: #e5e7eb;
+            font-size: 12px;
+        }
+
+        /* ─── PAGINATION ─── */
+        .pagination-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 24px;
+            justify-content: space-between;
+            padding: 12px 0;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #9ca3af;
         }
-        .pagination a {
-            font-size: 14px;
+        .pagination-info {
             font-weight: 500;
-            color: rgba(13,17,23,.5);
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .pagination-controls a,
+        .pagination-controls span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
             text-decoration: none;
-            transition: color .15s;
+            border-radius: 4px;
+            transition: all .1s;
         }
-        .pagination a:hover {
-            color: #ff6b6b;
+        .pagination-controls a:hover {
+            background: #f3f4f6;
+            color: #111827;
         }
-        .pagination a.disabled {
-            color: rgba(13,17,23,.2);
-            pointer-events: none;
+        .pagination-controls .active-page {
+            background: #111827;
+            color: #fff;
+            font-weight: 700;
         }
-        .pagination span {
-            font-size: 14px;
+        .pagination-controls .ellipsis {
+            color: #d1d5db;
+            cursor: default;
+        }
+        .pagination-controls .nav-arrow {
             font-weight: 600;
-            color: #0d1117;
+            color: #9ca3af;
+        }
+        .pagination-controls .nav-arrow:hover {
+            color: #111827;
         }
     </style>
 </head>
 <body>
 
-<!-- Nav -->
+<!-- NAV -->
 <nav class="nav">
-    <a href="#" class="nav-logo">Page<span class="turn">Turn</span></a>
+    <a href="#" class="nav-logo">Page<span>Turn</span></a>
     <div class="nav-right">
         <span class="admin-badge">Admin</span>
         <div class="nav-avatar">FD</div>
     </div>
 </nav>
 
-<!-- Layout -->
 <div class="layout">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR (collapsed, icon-only) -->
     <aside class="sidebar">
-        <ul class="sidebar-links">
+        <ul class="sidebar-nav">
             <li>
                 <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                    Dashboard
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <span class="sidebar-label">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="#">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Books
+                    <span class="sidebar-label">Books</span>
                 </a>
             </li>
             <li>
                 <a href="#" class="active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Users
+                    <span class="sidebar-label">Users</span>
                 </a>
             </li>
             <li>
                 <a href="#">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    Fines
+                    <span class="sidebar-label">Fines</span>
                 </a>
             </li>
         </ul>
-        <div class="sidebar-back">
-            <a href="#">
-                Back to Library
-                <span style="margin-left:2px;">&rarr;</span>
-            </a>
-        </div>
     </aside>
 
-    <!-- Main -->
-    <main class="main-content">
+    <!-- MAIN -->
+    <main class="main">
 
-        <!-- Page header -->
-        <div class="page-header">
-            <div>
-                <h1>Users</h1>
-                <p>50 registered members</p>
+        <!-- KPI BAR -->
+        <div class="kpi-bar">
+            <div class="kpi-item">
+                <span class="kpi-label">Total Users</span>
+                <span class="kpi-value blue">50</span>
             </div>
-            <div class="search-input">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" placeholder="Search by name or email...">
+            <div class="kpi-item">
+                <span class="kpi-label">Admins</span>
+                <span class="kpi-value muted">5</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Active Borrowers</span>
+                <span class="kpi-value green">35</span>
+                <span class="kpi-sub">with active loans</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Blocked</span>
+                <span class="kpi-value coral">3</span>
+                <span class="kpi-sub">fines &gt;= $10</span>
             </div>
         </div>
 
-        <!-- Users table -->
-        <div class="table-card">
+        <!-- CONTENT -->
+        <div class="content-area">
+
+            <!-- CONTROLS ROW -->
+            <div class="controls-row">
+                <div class="filter-tabs">
+                    <button class="filter-tab active">All</button>
+                    <button class="filter-tab">Active</button>
+                    <button class="filter-tab">Admins</button>
+                    <button class="filter-tab">Blocked</button>
+                </div>
+                <div class="controls-right">
+                    <input type="text" class="search-input" placeholder="Search by name or email...">
+                </div>
+            </div>
+
+            <!-- TABLE -->
             <table>
                 <thead>
                     <tr>
-                        <th style="width:32%;">User</th>
+                        <th class="sortable sorted-asc">Name <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
+                        <th>Email</th>
                         <th>Role</th>
                         <th>Active Loans</th>
-                        <th style="text-align:right;">Outstanding Fines</th>
-                        <th style="text-align:right;">Joined</th>
+                        <th class="sortable align-right">Fines <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
+                        <th>Max Loans</th>
+                        <th class="sortable">Joined <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1: Franco Dominguez -->
+                    <!-- Row 1 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">FD</div>
-                                <div>
-                                    <div class="user-name">Franco Dominguez</div>
-                                    <div class="user-email">franco@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-admin">admin</span></td>
+                        <td><span class="user-name">Alice Williams</span></td>
+                        <td><span class="email-text">alice.williams@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
                         <td>2</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
-                        <td class="date-cell" style="text-align:right;">Mar 1, 2024</td>
+                        <td class="align-right"><span class="fine-dash">&mdash;</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Sep 12, 2024</span></td>
                     </tr>
-
-                    <!-- Row 2: Sarah Johnson -->
+                    <!-- Row 2 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">SJ</div>
-                                <div>
-                                    <div class="user-name">Sarah Johnson</div>
-                                    <div class="user-email">sarah.j@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
-                        <td>3</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-coral">$2.50</span></td>
-                        <td class="date-cell" style="text-align:right;">Jun 15, 2024</td>
-                    </tr>
-
-                    <!-- Row 3: Mike Chen -->
-                    <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">MC</div>
-                                <div>
-                                    <div class="user-name">Mike Chen</div>
-                                    <div class="user-email">mike.chen@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
-                        <td>5</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-coral">$12.50</span></td>
-                        <td class="date-cell" style="text-align:right;">Aug 3, 2024</td>
-                    </tr>
-
-                    <!-- Row 4: Emily Park -->
-                    <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">EP</div>
-                                <div>
-                                    <div class="user-name">Emily Park</div>
-                                    <div class="user-email">emily.p@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-admin">admin</span></td>
+                        <td><span class="user-name">Carlos Rivera</span></td>
+                        <td><span class="email-text">c.rivera@email.com</span></td>
+                        <td><span class="role-admin">admin</span></td>
                         <td>0</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
-                        <td class="date-cell" style="text-align:right;">Sep 20, 2024</td>
+                        <td class="align-right"><span class="fine-dash">&mdash;</span></td>
+                        <td><span class="num-muted">10</span></td>
+                        <td><span class="date-text">Jan 3, 2023</span></td>
                     </tr>
-
-                    <!-- Row 5: Alice Williams -->
+                    <!-- Row 3 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">AW</div>
-                                <div>
-                                    <div class="user-name">Alice Williams</div>
-                                    <div class="user-email">alice.w@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
-                        <td>4</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
-                        <td class="date-cell" style="text-align:right;">Nov 5, 2024</td>
+                        <td><span class="user-name">Emily Park</span></td>
+                        <td><span class="email-text">emily.park@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>3</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$4.50</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Mar 22, 2024</span></td>
                     </tr>
-
-                    <!-- Row 6: Tom Brown -->
+                    <!-- Row 4 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">TB</div>
-                                <div>
-                                    <div class="user-name">Tom Brown</div>
-                                    <div class="user-email">tom.b@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
+                        <td><span class="user-name">Franco Dominguez</span></td>
+                        <td><span class="email-text">franco.d@email.com</span></td>
+                        <td><span class="role-admin">admin</span></td>
                         <td>1</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-coral">$7.25</span></td>
-                        <td class="date-cell" style="text-align:right;">Dec 12, 2024</td>
+                        <td class="align-right"><span class="fine-dash">&mdash;</span></td>
+                        <td><span class="num-muted">10</span></td>
+                        <td><span class="date-text">Jun 15, 2022</span></td>
                     </tr>
-
-                    <!-- Row 7: Jennifer Lee -->
+                    <!-- Row 5 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">JL</div>
-                                <div>
-                                    <div class="user-name">Jennifer Lee</div>
-                                    <div class="user-email">jennifer.l@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
-                        <td>3</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
-                        <td class="date-cell" style="text-align:right;">Jan 8, 2025</td>
+                        <td><span class="user-name">Jennifer Lee</span></td>
+                        <td><span class="email-text">jen.lee@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>4</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$12.00</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Nov 8, 2023</span></td>
                     </tr>
-
-                    <!-- Row 8: Robert Kim -->
+                    <!-- Row 6 -->
                     <tr>
-                        <td>
-                            <div class="user-cell">
-                                <div class="user-avatar">RK</div>
-                                <div>
-                                    <div class="user-name">Robert Kim</div>
-                                    <div class="user-email">robert.k@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-badge role-user">user</span></td>
+                        <td><span class="user-name">Mike Chen</span></td>
+                        <td><span class="email-text">mike.chen@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>2</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$9.50</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Feb 14, 2024</span></td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr>
+                        <td><span class="user-name">Priya Sharma</span></td>
+                        <td><span class="email-text">priya.sharma@email.com</span></td>
+                        <td><span class="role-admin">admin</span></td>
                         <td>0</td>
-                        <td style="text-align:right;"><span class="fine-amount fine-coral-bold">$25.00</span></td>
-                        <td class="date-cell" style="text-align:right;">Feb 14, 2025</td>
+                        <td class="align-right"><span class="fine-dash">&mdash;</span></td>
+                        <td><span class="num-muted">10</span></td>
+                        <td><span class="date-text">Aug 1, 2022</span></td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <tr>
+                        <td><span class="user-name">Robert Kim</span></td>
+                        <td><span class="email-text">r.kim@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>1</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$25.00</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">May 30, 2024</span></td>
+                    </tr>
+                    <!-- Row 9 -->
+                    <tr>
+                        <td><span class="user-name">Sarah Johnson</span></td>
+                        <td><span class="email-text">sarah.j@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>3</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$3.50</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Oct 19, 2023</span></td>
+                    </tr>
+                    <!-- Row 10 -->
+                    <tr>
+                        <td><span class="user-name">Tom Brown</span></td>
+                        <td><span class="email-text">tom.brown@email.com</span></td>
+                        <td><span class="role-user">user</span></td>
+                        <td>0</td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$30.00</span></td>
+                        <td><span class="num-muted">5</span></td>
+                        <td><span class="date-text">Jul 7, 2024</span></td>
                     </tr>
                 </tbody>
             </table>
-        </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <a href="#" class="disabled">&larr; Previous</a>
-            <span>Page 1 of 3</span>
-            <a href="#">Next &rarr;</a>
-        </div>
+            <!-- PAGINATION -->
+            <div class="pagination-bar">
+                <span class="pagination-info">1&ndash;10 of 50 results</span>
+                <div class="pagination-controls">
+                    <a href="#" class="nav-arrow">&laquo; Prev</a>
+                    <a href="#" class="active-page">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <span class="ellipsis">&hellip;</span>
+                    <a href="#">5</a>
+                    <a href="#" class="nav-arrow">Next &raquo;</a>
+                </div>
+            </div>
 
+        </div>
     </main>
 </div>
-
-<!-- Footer -->
-<footer style="background:#0d1117; padding:48px; margin-top:0;">
-    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
-        <div>
-            <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
-            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
-        </div>
-        <div style="display:flex; gap:32px;">
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">My Loans</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
-        </div>
-        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">&copy; 2026 PageTurn Library. All rights reserved.</p>
-    </div>
-</footer>
 
 </body>
 </html>

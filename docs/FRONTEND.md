@@ -601,36 +601,81 @@ function getLoanStatus(days_remaining: number): 'active' | 'due-soon' | 'overdue
 
 ---
 
-### Admin Pages
+### Admin Pages — Design System ("Notion/Stripe" Style)
 
-**AdminLayout**: Sidebar navigation + content area. Sidebar links: Dashboard, Books, Users, Fines.
+Admin pages use a **distinct, denser design** from user-facing pages. The philosophy: admins don't care about pretty — they need information density, fast actions, and zero wasted space.
 
-**AdminDashboard**:
-- 6 stat cards in 2×3 grid: Total Books, Total Copies, Active Loans, Overdue Loans, Total Users, Outstanding Fines
-- Each card: icon, label, large number
+**Mockups**: `mockups/admin-dashboard.html`, `admin-books.html`, `admin-users.html`, `admin-user-detail.html`, `admin-fines.html`
 
-**AdminBooksPage**:
-- Search input at top
-- "Add Book" button → modal with form
-- Table columns: Cover (small), Title, Author, Genre, Copies, Actions (Edit | Delete)
-- Clicking the copy count on a book row opens a **CopyManagementModal** showing all copies in a table (Barcode, Condition pill, Status pill, Actions). Admin can update condition via dropdown, mark as damaged/lost via action buttons.
-- Edit opens same modal pre-filled
-- Delete shows confirmation dialog
+**Admin Design Tokens** (override user-facing tokens):
+- Body font size: 13px (not 14px)
+- Background: `#f9fafb` (slightly cooler than user `#fafafa`)
+- Nav height: 48px (not 72px) — compact
+- Card radius: 6-8px (not 16px) — less decorative
+- Table row height: 44px fixed
+- No stat cards — use KPI bar instead
+- Status: 6px colored dot + text (not rounded pill badges)
+- Actions: ghost buttons that appear on row hover (not always-visible links)
+- Amounts: Space Grotesk 600, `font-variant-numeric: tabular-nums`, right-aligned
 
-**AdminUsersPage**:
-- Search by name/email
-- Table: Name, Email, Role badge, Active Loans, Outstanding Fines, Joined
-- Click row → navigate to `/admin/users/:id`
+**AdminLayout**:
+- Collapsed icon sidebar (48px, dark `#1e2330`) + content area
+- Sidebar expands to 200px on hover, showing labels via CSS transition
+- Sidebar icons: grid (dashboard), book (books), users (users), dollar (fines)
+- Active link: white text, coral left border (2px), subtle lighter background
+- No footer on admin pages (tool-like, not marketing)
 
-**AdminUserDetail**:
-- User profile card (name, email, role, max_loans)
-- Tabbed sections: Current Loans | History | Reservations | Fines | Reviews
-- Fine rows have "Waive" button
-- "Promote to Admin" / "Demote" button with confirmation
+**KPI Bar** (replaces stat cards on all admin pages):
+- Full-width white bar below nav, with `border-bottom: 1px solid #e5e7eb`
+- Metrics side by side, divided by thin vertical lines
+- Each metric: 11px uppercase muted label, 24px Space Grotesk 700 value (colored), 12px muted subtitle
+- Compact: 14px vertical padding
 
-**AdminFinesPage**:
+**Controls Row** (on table pages):
+- Left: underline filter tabs (text, not pills) — active = bold + bottom border
+- Right: compact search input (200px, 32px height) + action buttons (32px height, 6px radius)
+
+**Table Pattern** (consistent across all admin pages):
+- No card wrapper — table IS the content
+- Header: 11px uppercase `#6b7280`, `letter-spacing: 0.5px`, bottom border only
+- Sort arrows (▲▼) on sortable columns
+- 44px row height, `border-bottom: 1px solid #f3f4f6`
+- Hover: coral left border (2px) + subtle background tint
+- Ghost action buttons: invisible by default, appear on row hover with coral color
+
+**AdminDashboard** (`/admin`):
+- KPI bar: Total Books, Total Copies, Active Loans, Overdue, Users, Fines Outstanding
+- Split content: Recent Activity table (60%) + Overdue list + Quick Actions (40%)
+- Recent Activity: Time, Event, User, Details columns
+- Quick Actions: "Process Returns", "View Overdue", "Manage Fines" — outlined 32px buttons
+
+**AdminBooksPage** (`/admin/books`):
+- KPI bar: Total Books, Total Copies, Staff Picks, Avg Rating
+- Filter tabs: All, Books, Audiobooks, DVDs, Ebooks, Magazines
+- Table: Title, Author, Genre (plain text), Type (muted text), Copies (blue clickable), Rating, Staff Pick ("Yes" coral or dash), Actions (Edit/Delete ghost buttons)
+- Add Book modal: 560px, 8px radius, dense 2-column form, 32px inputs, 11px labels
+- Clicking copy count opens **CopyManagementModal** with copy table (Barcode, Condition, Status, Actions)
+
+**AdminUsersPage** (`/admin/users`):
+- KPI bar: Total Users, Admins, Active Borrowers, Blocked (fines >= $10)
+- Filter tabs: All, Active, Admins, Blocked
+- Table: Name, Email, Role ("admin" coral / "user" muted), Active Loans, Outstanding Fines (coral if > 0), Max Loans, Joined
+- No avatars — density over decoration
+- Clickable rows → navigate to `/admin/users/:id`
+
+**AdminUserDetail** (`/admin/users/:id`):
+- KPI bar: Active Loans, Total Borrowed, Outstanding Fines, Reviews Written, Max Loans
+- User info bar: name + role + email + join date (compact horizontal), Edit/Promote buttons right-aligned
+- Breadcrumb: "Users" → "Mike Chen"
+- Tab bar (underline style): Loans, History, Reservations, Fines, Reviews
+- Current Loans table: Book, Checked Out, Due Date, Status (dot), Renewals (#/2), Action (Return/Mark Lost ghost buttons)
+- Fines section below: compact table with Waive ghost buttons, total outstanding right-aligned
+
+**AdminFinesPage** (`/admin/fines`):
+- KPI bar: Outstanding, Collected, Waived, Avg Fine
 - Filter tabs: All, Pending, Paid, Waived
-- Table: User, Book, Amount, Reason, Status, Date, Actions (Waive)
+- Table: User, Book, Reason (plain text), Amount (right-aligned), Status (dot), Date, Action (Waive ghost button)
+- Sort arrows on Amount and Date
 
 ---
 

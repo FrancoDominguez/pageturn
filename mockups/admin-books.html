@@ -3,751 +3,685 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PageTurn — Admin Books Management</title>
+    <title>PageTurn Admin — Books</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #fafafa;
-            color: #0d1117;
-            line-height: 1.6;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 13px;
+            line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ── NAV ── */
-        nav {
+        /* ─── NAV ─── */
+        .nav {
             background: #0d1117;
-            padding: 0 48px;
-            height: 72px;
+            height: 48px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            padding: 0 20px;
             position: sticky;
             top: 0;
             z-index: 200;
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            border-bottom: 1px solid rgba(255,255,255,.06);
         }
-
         .nav-logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 18px;
             color: #fff;
             text-decoration: none;
             letter-spacing: -0.5px;
-            flex-shrink: 0;
         }
-
         .nav-logo span {
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .nav-right {
+            margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
-
         .admin-badge {
-            background: rgba(255,107,107,.15);
-            color: #ff6b6b;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 50px;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #ff6b6b;
+            background: rgba(255,107,107,.12);
+            padding: 3px 8px;
+            border-radius: 4px;
         }
-
         .nav-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 11px;
             color: #fff;
             cursor: pointer;
         }
 
-        /* ── LAYOUT ── */
-        .admin-layout {
+        /* ─── LAYOUT ─── */
+        .layout {
             display: flex;
-            min-height: calc(100vh - 72px);
+            flex: 1;
         }
 
-        /* ── SIDEBAR ── */
-        .admin-sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e5e5;
-            padding: 24px 0;
+        /* ─── SIDEBAR (collapsed icon-only) ─── */
+        .sidebar {
+            width: 48px;
+            background: #1e2330;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding-top: 12px;
             position: sticky;
-            top: 72px;
-            height: calc(100vh - 72px);
+            top: 48px;
+            height: calc(100vh - 48px);
             flex-shrink: 0;
+            z-index: 150;
+            transition: width .2s cubic-bezier(.4,0,.2,1);
+            overflow: hidden;
         }
-
-        .sidebar-links {
-            flex: 1;
+        .sidebar:hover {
+            width: 200px;
+            box-shadow: 4px 0 24px rgba(0,0,0,.15);
+        }
+        .sidebar-nav {
+            list-style: none;
+            width: 100%;
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
-
-        .sidebar-link {
+        .sidebar-nav li a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(13,17,23,.55);
+            height: 40px;
+            padding: 0 14px;
+            color: rgba(255,255,255,.4);
             text-decoration: none;
-            border-left: 3px solid transparent;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             transition: all .15s;
+            border-left: 2px solid transparent;
         }
-
-        .sidebar-link:hover {
-            color: #0d1117;
-            background: rgba(13,17,23,.03);
+        .sidebar-nav li a:hover {
+            color: rgba(255,255,255,.8);
+            background: rgba(255,255,255,.04);
         }
-
-        .sidebar-link.active {
-            color: #ff6b6b;
-            background: rgba(255,107,107,.05);
+        .sidebar-nav li a.active {
+            color: #fff;
+            background: rgba(255,255,255,.06);
             border-left-color: #ff6b6b;
-            font-weight: 600;
         }
-
-        .sidebar-link svg {
+        .sidebar-nav li a svg {
             width: 18px;
             height: 18px;
             flex-shrink: 0;
         }
-
-        .sidebar-bottom {
-            padding: 16px 24px;
-            border-top: 1px solid #e5e5e5;
+        .sidebar-nav li a .sidebar-label {
+            opacity: 0;
+            transition: opacity .15s;
+        }
+        .sidebar:hover .sidebar-label {
+            opacity: 1;
         }
 
-        .sidebar-bottom a {
-            font-size: 13px;
-            color: rgba(13,17,23,.45);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color .15s;
-        }
-
-        .sidebar-bottom a:hover {
-            color: #ff6b6b;
-        }
-
-        /* ── CONTENT ── */
-        .admin-content {
+        /* ─── MAIN CONTENT ─── */
+        .main {
             flex: 1;
-            padding: 40px 48px 60px;
-            max-width: 1100px;
-        }
-
-        /* ── TOP BAR ── */
-        .content-topbar {
+            min-width: 0;
             display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            margin-bottom: 32px;
+            flex-direction: column;
         }
 
-        .content-topbar h1 {
+        /* ─── KPI BAR ─── */
+        .kpi-bar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            padding: 0;
+        }
+        .kpi-item {
+            flex: 1;
+            padding: 14px 24px;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .kpi-item:last-child {
+            border-right: none;
+        }
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .kpi-value {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 30px;
-            letter-spacing: -0.5px;
+            font-size: 24px;
             line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+        .kpi-value.coral { color: #ff6b6b; }
+        .kpi-value.green { color: #10b981; }
+        .kpi-value.muted { color: #9ca3af; }
+        .kpi-value.blue { color: #3b82f6; }
+        .kpi-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: -1px;
         }
 
-        .content-topbar .subtitle {
-            color: rgba(13,17,23,.45);
-            font-size: 14px;
-            margin-top: 4px;
+        /* ─── CONTENT AREA ─── */
+        .content-area {
+            padding: 20px 32px 40px;
         }
 
-        .topbar-actions {
+        /* ─── CONTROLS ROW ─── */
+        .controls-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
-
+        .filter-tabs {
+            display: flex;
+            gap: 24px;
+        }
+        .filter-tab {
+            background: none;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0 0 6px 0;
+            border-bottom: 2px solid transparent;
+            transition: all .15s;
+        }
+        .filter-tab:hover {
+            color: #374151;
+        }
+        .filter-tab.active {
+            color: #111827;
+            font-weight: 700;
+            border-bottom-color: #111827;
+        }
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         .search-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 10px 16px;
-            width: 240px;
+            width: 200px;
+            height: 32px;
+            padding: 0 10px 0 32px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: #111827;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 10px center no-repeat;
+            outline: none;
             transition: border-color .15s;
         }
-
-        .search-input:focus-within {
-            border-color: rgba(255,107,107,.4);
+        .search-input::placeholder {
+            color: #9ca3af;
         }
-
-        .search-input svg {
-            width: 16px;
-            height: 16px;
-            color: rgba(13,17,23,.35);
-            flex-shrink: 0;
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
         }
-
-        .search-input input {
+        .btn-add-book {
+            height: 32px;
+            padding: 0 14px;
             border: none;
-            outline: none;
-            background: transparent;
+            border-radius: 6px;
+            background: #ff6b6b;
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            color: #0d1117;
-            width: 100%;
-        }
-
-        .search-input input::placeholder {
-            color: rgba(13,17,23,.35);
-        }
-
-        .btn-gradient {
-            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 24px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
+            color: #fff;
             cursor: pointer;
-            transition: opacity .15s, transform .1s;
-            white-space: nowrap;
+            transition: all .15s;
+        }
+        .btn-add-book:hover {
+            background: #e05555;
         }
 
-        .btn-gradient:hover {
-            opacity: .9;
-            transform: translateY(-1px);
-        }
-
-        /* ── TABLE ── */
-        .table-card {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
+        /* ─── TABLE ─── */
         table {
             width: 100%;
             border-collapse: collapse;
+            background: #fff;
+            border-radius: 0;
         }
-
         thead th {
-            background: #fafafa;
-            padding: 14px 16px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
+            color: #6b7280;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: rgba(13,17,23,.4);
+            letter-spacing: 0.5px;
             text-align: left;
-            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: transparent;
+            white-space: nowrap;
+            user-select: none;
         }
-
+        thead th.sortable {
+            cursor: pointer;
+        }
+        thead th.sortable:hover {
+            color: #374151;
+        }
+        .sort-arrows {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            margin-left: 3px;
+            line-height: 1;
+            font-size: 8px;
+            color: #d1d5db;
+            position: relative;
+            top: -1px;
+        }
+        .sort-arrows .up,
+        .sort-arrows .down {
+            line-height: 7px;
+        }
+        thead th.sorted-asc .sort-arrows .up,
+        thead th.sorted-desc .sort-arrows .down {
+            color: #374151;
+        }
+        thead th.align-right {
+            text-align: right;
+        }
+        thead th.align-center {
+            text-align: center;
+        }
         tbody tr {
-            border-bottom: 1px solid #f0f0f0;
-            transition: background .12s;
+            position: relative;
+            transition: background .1s;
+            border-left: 2px solid transparent;
         }
-
-        tbody tr:last-child {
-            border-bottom: none;
-        }
-
         tbody tr:hover {
-            background: #f0f4ff;
+            border-left-color: #ff6b6b;
+            background: rgba(255,107,107,.015);
         }
-
         tbody td {
-            padding: 14px 16px;
-            font-size: 14px;
+            padding: 0 12px;
+            height: 44px;
+            font-size: 13px;
+            border-bottom: 1px solid #f3f4f6;
             vertical-align: middle;
         }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        tbody td.align-right {
+            text-align: right;
+        }
+        tbody td.align-center {
+            text-align: center;
+        }
 
-        .book-cover {
-            width: 40px;
-            height: 56px;
+        /* Title column */
+        .book-title {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        /* Author column */
+        .author-text {
+            color: #374151;
+        }
+
+        /* Genre column */
+        .genre-text {
+            color: #374151;
+        }
+
+        /* Type column */
+        .type-text {
+            color: #374151;
+        }
+        .type-text.muted {
+            color: #9ca3af;
+        }
+
+        /* Copies column */
+        .copies-link {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .copies-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Rating column */
+        .rating-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+            color: #374151;
+        }
+
+        /* Staff Pick column */
+        .staff-pick-yes {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .staff-pick-dash {
+            color: #d1d5db;
+            font-size: 13px;
+        }
+
+        /* Action column */
+        .action-cell {
+            text-align: right;
+            white-space: nowrap;
+        }
+        .btn-action {
+            display: inline-block;
+            height: 26px;
+            line-height: 24px;
+            padding: 0 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            background: transparent;
+            border: 1px solid transparent;
             border-radius: 4px;
-            background: linear-gradient(135deg, #e8e8e8, #d0d0d0);
+            cursor: pointer;
+            opacity: 0;
+            transition: all .15s;
+        }
+        tbody tr:hover .btn-action {
+            opacity: 1;
+        }
+        .btn-action.edit {
+            color: #3b82f6;
+            border-color: rgba(59,130,246,.3);
+        }
+        .btn-action.edit:hover {
+            background: rgba(59,130,246,.06);
+            border-color: #3b82f6;
+        }
+        .btn-action.delete {
+            color: #ff6b6b;
+            border-color: rgba(255,107,107,.3);
+        }
+        .btn-action.delete:hover {
+            background: rgba(255,107,107,.06);
+            border-color: #ff6b6b;
+        }
+
+        /* ─── PAGINATION ─── */
+        .pagination-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 8px;
-            font-weight: 700;
-            color: rgba(0,0,0,.3);
-            text-align: center;
-            line-height: 1.2;
-            overflow: hidden;
+            justify-content: space-between;
+            padding: 12px 0;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #9ca3af;
         }
-
-        .book-title-cell {
+        .pagination-info {
+            font-weight: 500;
+        }
+        .pagination-controls {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
+            align-items: center;
+            gap: 0;
         }
-
-        .book-title {
-            font-weight: 600;
-            font-size: 14px;
-            color: #0d1117;
-        }
-
-        .book-author {
-            font-size: 13px;
-            color: rgba(13,17,23,.45);
-        }
-
-        .genre-pill {
-            display: inline-block;
-            background: #f3f4f6;
-            color: rgba(13,17,23,.6);
+        .pagination-controls a,
+        .pagination-controls span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 6px;
+            font-family: 'DM Sans', sans-serif;
             font-size: 12px;
             font-weight: 500;
-            padding: 3px 12px;
-            border-radius: 50px;
-        }
-
-        .type-badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .type-badge.audiobook {
-            background: rgba(76,201,240,.1);
-            color: #4cc9f0;
-        }
-
-        .type-badge.ebook {
-            background: rgba(168,85,247,.1);
-            color: #a855f7;
-        }
-
-        .type-badge.dvd {
-            background: rgba(245,158,11,.1);
-            color: #f59e0b;
-        }
-
-        .copies-link {
-            color: #4cc9f0;
-            font-weight: 600;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .copies-link:hover {
-            color: #38b2db;
-        }
-
-        .staff-pick-star {
-            color: #ff6b6b;
-            font-size: 16px;
-        }
-
-        .staff-pick-dash {
-            color: rgba(13,17,23,.2);
-            font-size: 16px;
-        }
-
-        .action-edit {
-            color: #ff6b6b;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
+            color: #6b7280;
             text-decoration: none;
-            transition: opacity .15s;
+            border-radius: 4px;
+            transition: all .1s;
         }
-
-        .action-edit:hover {
-            opacity: .7;
+        .pagination-controls a:hover {
+            background: #f3f4f6;
+            color: #111827;
         }
-
-        .action-delete {
-            color: rgba(13,17,23,.3);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: color .15s;
+        .pagination-controls .active-page {
+            background: #111827;
+            color: #fff;
+            font-weight: 700;
         }
-
-        .action-delete:hover {
-            color: #ef4444;
+        .pagination-controls .ellipsis {
+            color: #d1d5db;
+            cursor: default;
         }
-
-        .actions-cell {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        /* ── PAGINATION ── */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 24px;
-            font-size: 14px;
-            color: rgba(13,17,23,.5);
-        }
-
-        .pagination a {
-            color: #ff6b6b;
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity .15s;
-        }
-
-        .pagination a:hover {
-            opacity: .7;
-        }
-
-        .pagination a.disabled {
-            color: rgba(13,17,23,.2);
-            pointer-events: none;
-        }
-
-        .pagination .page-info {
+        .pagination-controls .nav-arrow {
             font-weight: 600;
-            color: #0d1117;
+            color: #9ca3af;
+        }
+        .pagination-controls .nav-arrow:hover {
+            color: #111827;
         }
 
-        /* ── MODAL OVERLAY ── */
+        /* ─── MODAL ─── */
         .modal-backdrop {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(13,17,23,.55);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: 300;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 500;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .modal-card {
+        .modal {
             background: #fff;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 32px 64px rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.05);
-            padding: 32px;
+            width: 560px;
+            max-height: calc(100vh - 80px);
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-
         .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 28px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
         }
-
-        .modal-header h2 {
+        .modal-title {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 22px;
-            letter-spacing: -0.3px;
+            font-size: 18px;
+            color: #111827;
         }
-
         .modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px solid #e5e5e5;
-            background: #fff;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 18px;
             cursor: pointer;
-            transition: background .15s;
-            color: rgba(13,17,23,.5);
+            border-radius: 4px;
+            transition: all .15s;
         }
-
         .modal-close:hover {
             background: #f3f4f6;
+            color: #374151;
         }
-
-        .modal-close svg {
-            width: 18px;
-            height: 18px;
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
         }
-
-        /* ── FORM ── */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 8px;
         }
-
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 3px;
         }
-
         .form-group.full-width {
             grid-column: 1 / -1;
         }
-
-        .form-group label {
-            font-size: 13px;
+        .form-label {
+            font-size: 11px;
             font-weight: 600;
-            color: rgba(13,17,23,.7);
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
-
-        .form-group label .required {
+        .form-label .required {
             color: #ff6b6b;
-            margin-left: 2px;
         }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 14px;
+        .form-input,
+        .form-select,
+        .form-textarea {
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            color: #0d1117;
+            font-size: 13px;
+            color: #111827;
+            background: #fff;
             outline: none;
             transition: border-color .15s;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: rgba(255,107,107,.4);
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,.08);
         }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: rgba(13,17,23,.3);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-group select {
+        .form-select {
             appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 36px;
+            background-position: right 10px center;
+            padding-right: 28px;
         }
-
-        /* Toggle switch */
-        .toggle-row {
+        .form-textarea {
+            height: auto;
+            padding: 8px 10px;
+            resize: vertical;
+        }
+        .form-checkbox-group {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 0;
+            gap: 8px;
+            height: 32px;
         }
-
-        .toggle-switch {
-            width: 44px;
-            height: 24px;
-            background: #e5e5e5;
-            border-radius: 12px;
-            position: relative;
+        .form-checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #ff6b6b;
             cursor: pointer;
-            transition: background .2s;
         }
-
-        .toggle-switch.active {
-            background: #ff6b6b;
+        .form-checkbox-group label {
+            font-size: 13px;
+            color: #374151;
+            cursor: pointer;
         }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: #fff;
-            border-radius: 50%;
-            transition: transform .2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,.15);
-        }
-
-        .toggle-switch.active::after {
-            transform: translateX(20px);
-        }
-
-        .toggle-label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .staff-pick-note {
-            margin-top: 12px;
-        }
-
-        .modal-actions {
+        .modal-footer {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e5e5;
+            gap: 10px;
+            padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
         }
-
-        .btn-outlined {
-            background: transparent;
-            color: rgba(13,17,23,.6);
-            border: 1px solid #e5e5e5;
-            border-radius: 50px;
-            padding: 10px 24px;
+        .btn-cancel {
+            height: 32px;
+            padding: 0 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
+            color: #374151;
             cursor: pointer;
-            transition: border-color .15s, color .15s;
+            transition: all .15s;
         }
-
-        .btn-outlined:hover {
-            border-color: #ccc;
-            color: #0d1117;
+        .btn-cancel:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
         }
-
-        /* ── FOOTER ── */
-        footer {
-            background: #0d1117;
-            border-top: 1px solid rgba(255,255,255,.06);
-            padding: 48px 48px 32px;
-        }
-
-        .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 48px;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand .nav-logo {
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .footer-brand p {
-            color: rgba(255,255,255,.4);
-            font-size: 14px;
-            line-height: 1.7;
-            max-width: 280px;
-        }
-
-        .footer-col h4 {
-            font-family: 'Space Grotesk', sans-serif;
+        .btn-submit {
+            height: 32px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 6px;
+            background: #ff6b6b;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
             font-weight: 600;
             color: #fff;
-            font-size: 14px;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all .15s;
         }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-col ul a {
-            color: rgba(255,255,255,.4);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color .2s;
-        }
-
-        .footer-col ul a:hover {
-            color: #fff;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255,255,255,.06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-bottom p {
-            color: rgba(255,255,255,.3);
-            font-size: 13px;
-        }
-
-        .footer-bottom-links {
-            display: flex;
-            gap: 24px;
-        }
-
-        .footer-bottom-links a {
-            color: rgba(255,255,255,.3);
-            font-size: 13px;
-            text-decoration: none;
-            transition: color .2s;
-        }
-
-        .footer-bottom-links a:hover {
-            color: rgba(255,255,255,.6);
+        .btn-submit:hover {
+            background: #e05555;
         }
     </style>
 </head>
 <body>
 
-<!-- ══════════════════ NAV ══════════════════ -->
-<nav>
+<!-- NAV -->
+<nav class="nav">
     <a href="#" class="nav-logo">Page<span>Turn</span></a>
     <div class="nav-right">
         <span class="admin-badge">Admin</span>
@@ -755,425 +689,330 @@
     </div>
 </nav>
 
-<!-- ══════════════════ ADMIN LAYOUT ══════════════════ -->
-<div class="admin-layout">
+<div class="layout">
 
-    <!-- ── SIDEBAR ── -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-links">
-            <a href="#" class="sidebar-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Dashboard
-            </a>
-            <a href="#" class="sidebar-link active">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                Books
-            </a>
-            <a href="#" class="sidebar-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Users
-            </a>
-            <a href="#" class="sidebar-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                Fines
-            </a>
-        </div>
-        <div class="sidebar-bottom">
-            <a href="#">Back to Library &rarr;</a>
-        </div>
+    <!-- SIDEBAR (collapsed, icon-only) -->
+    <aside class="sidebar">
+        <ul class="sidebar-nav">
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <span class="sidebar-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span class="sidebar-label">Books</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span class="sidebar-label">Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="sidebar-label">Fines</span>
+                </a>
+            </li>
+        </ul>
     </aside>
 
-    <!-- ── MAIN CONTENT ── -->
-    <main class="admin-content">
+    <!-- MAIN -->
+    <main class="main">
 
-        <!-- Top bar -->
-        <div class="content-topbar">
-            <div>
-                <h1>Books</h1>
-                <p class="subtitle">1,024 books in catalogue</p>
+        <!-- KPI BAR -->
+        <div class="kpi-bar">
+            <div class="kpi-item">
+                <span class="kpi-label">Total Books</span>
+                <span class="kpi-value blue">1,024</span>
+                <span class="kpi-sub">unique titles</span>
             </div>
-            <div class="topbar-actions">
-                <div class="search-input">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" placeholder="Search books...">
-                </div>
-                <button class="btn-gradient" onclick="document.getElementById('addBookModal').style.display='flex'">Add Book</button>
+            <div class="kpi-item">
+                <span class="kpi-label">Total Copies</span>
+                <span class="kpi-value muted">2,847</span>
+                <span class="kpi-sub">across all branches</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Staff Picks</span>
+                <span class="kpi-value coral">18</span>
+                <span class="kpi-sub">currently featured</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Avg Rating</span>
+                <span class="kpi-value blue">3.7</span>
+                <span class="kpi-sub">across 200 reviews</span>
             </div>
         </div>
 
-        <!-- Books Table -->
-        <div class="table-card">
+        <!-- CONTENT -->
+        <div class="content-area">
+
+            <!-- CONTROLS ROW -->
+            <div class="controls-row">
+                <div class="filter-tabs">
+                    <button class="filter-tab active">All</button>
+                    <button class="filter-tab">Books</button>
+                    <button class="filter-tab">Audiobooks</button>
+                    <button class="filter-tab">DVDs</button>
+                    <button class="filter-tab">Ebooks</button>
+                    <button class="filter-tab">Magazines</button>
+                </div>
+                <div class="controls-right">
+                    <input type="text" class="search-input" placeholder="Search books...">
+                    <button class="btn-add-book">Add Book</button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
             <table>
                 <thead>
                     <tr>
-                        <th>Cover</th>
-                        <th>Title / Author</th>
+                        <th class="sortable sorted-asc">Title <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
+                        <th>Author</th>
                         <th>Genre</th>
                         <th>Type</th>
-                        <th>Copies</th>
-                        <th>Staff Pick</th>
-                        <th>Actions</th>
+                        <th class="sortable align-right">Copies <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
+                        <th class="sortable align-right">Rating <span class="sort-arrows"><span class="up">&#9650;</span><span class="down">&#9660;</span></span></th>
+                        <th class="align-center">Staff Pick</th>
+                        <th class="align-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Row 1 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
-                                <span style="color:rgba(255,255,255,.5);">TGG</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">The Great Gatsby</span>
-                                <span class="book-author">F. Scott Fitzgerald</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Fiction</span></td>
-                        <td>&mdash;</td>
-                        <td><a class="copies-link">3 copies</a></td>
-                        <td><span class="staff-pick-star">&#9733;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">1984</span></td>
+                        <td><span class="author-text">George Orwell</span></td>
+                        <td><span class="genre-text">Dystopian</span></td>
+                        <td><span class="type-text muted">Book</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">5</a></td>
+                        <td class="align-right"><span class="rating-value">4.3</span></td>
+                        <td class="align-center"><span class="staff-pick-yes">Yes</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 2 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #e8c547, #c4943a);">
-                                <span style="color:rgba(255,255,255,.6);">D</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">Dune</span>
-                                <span class="book-author">Frank Herbert</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Sci-Fi</span></td>
-                        <td>&mdash;</td>
-                        <td><a class="copies-link">3 copies</a></td>
-                        <td><span class="staff-pick-star">&#9733;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Becoming</span></td>
+                        <td><span class="author-text">Michelle Obama</span></td>
+                        <td><span class="genre-text">Memoir</span></td>
+                        <td><span class="type-text">Audiobook</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">2</a></td>
+                        <td class="align-right"><span class="rating-value">4.1</span></td>
+                        <td class="align-center"><span class="staff-pick-yes">Yes</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 3 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #ef4444, #991b1b);">
-                                <span style="color:rgba(255,255,255,.6);">1984</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">1984</span>
-                                <span class="book-author">George Orwell</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Fiction</span></td>
-                        <td>&mdash;</td>
-                        <td><a class="copies-link">2 copies</a></td>
-                        <td><span class="staff-pick-dash">&mdash;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Dune</span></td>
+                        <td><span class="author-text">Frank Herbert</span></td>
+                        <td><span class="genre-text">Science Fiction</span></td>
+                        <td><span class="type-text muted">Book</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">4</a></td>
+                        <td class="align-right"><span class="rating-value">4.5</span></td>
+                        <td class="align-center"><span class="staff-pick-yes">Yes</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 4 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #f97316, #c2410c);">
-                                <span style="color:rgba(255,255,255,.6);">S</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">Sapiens</span>
-                                <span class="book-author">Yuval Noah Harari</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Non-Fiction</span></td>
-                        <td>&mdash;</td>
-                        <td><a class="copies-link">2 copies</a></td>
-                        <td><span class="staff-pick-dash">&mdash;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Educated</span></td>
+                        <td><span class="author-text">Tara Westover</span></td>
+                        <td><span class="genre-text">Memoir</span></td>
+                        <td><span class="type-text">Ebook</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">1</a></td>
+                        <td class="align-right"><span class="rating-value">3.8</span></td>
+                        <td class="align-center"><span class="staff-pick-dash">&mdash;</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 5 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #059669, #065f46);">
-                                <span style="color:rgba(255,255,255,.6);">TH</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">The Hobbit</span>
-                                <span class="book-author">J.R.R. Tolkien</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Fantasy</span></td>
-                        <td><span class="type-badge audiobook">Audiobook</span></td>
-                        <td><a class="copies-link">3 copies</a></td>
-                        <td><span class="staff-pick-star">&#9733;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Gone Girl</span></td>
+                        <td><span class="author-text">Gillian Flynn</span></td>
+                        <td><span class="genre-text">Thriller</span></td>
+                        <td><span class="type-text muted">Book</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">3</a></td>
+                        <td class="align-right"><span class="rating-value">3.9</span></td>
+                        <td class="align-center"><span class="staff-pick-dash">&mdash;</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 6 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
-                                <span style="color:rgba(255,255,255,.6);">GG</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">Gone Girl</span>
-                                <span class="book-author">Gillian Flynn</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Thriller</span></td>
-                        <td><span class="type-badge ebook">Ebook</span></td>
-                        <td><a class="copies-link">1 copy</a></td>
-                        <td><span class="staff-pick-dash">&mdash;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">National Geographic</span></td>
+                        <td><span class="author-text">Various</span></td>
+                        <td><span class="genre-text">Science</span></td>
+                        <td><span class="type-text">Magazine</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">12</a></td>
+                        <td class="align-right"><span class="rating-value">3.2</span></td>
+                        <td class="align-center"><span class="staff-pick-dash">&mdash;</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 7 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #0ea5e9, #0369a1);">
-                                <span style="color:rgba(255,255,255,.6);">C</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">Cosmos</span>
-                                <span class="book-author">Carl Sagan</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Science</span></td>
-                        <td><span class="type-badge dvd">DVD</span></td>
-                        <td><a class="copies-link">2 copies</a></td>
-                        <td><span class="staff-pick-dash">&mdash;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Project Hail Mary</span></td>
+                        <td><span class="author-text">Andy Weir</span></td>
+                        <td><span class="genre-text">Science Fiction</span></td>
+                        <td><span class="type-text">Audiobook</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">2</a></td>
+                        <td class="align-right"><span class="rating-value">4.7</span></td>
+                        <td class="align-center"><span class="staff-pick-yes">Yes</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                     <!-- Row 8 -->
                     <tr>
-                        <td>
-                            <div class="book-cover" style="background: linear-gradient(135deg, #ec4899, #be185d);">
-                                <span style="color:rgba(255,255,255,.6);">P&P</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="book-title-cell">
-                                <span class="book-title">Pride and Prejudice</span>
-                                <span class="book-author">Jane Austen</span>
-                            </div>
-                        </td>
-                        <td><span class="genre-pill">Romance</span></td>
-                        <td>&mdash;</td>
-                        <td><a class="copies-link">2 copies</a></td>
-                        <td><span class="staff-pick-star">&#9733;</span></td>
-                        <td>
-                            <div class="actions-cell">
-                                <a href="#" class="action-edit">Edit</a>
-                                <a href="#" class="action-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td><span class="book-title">Sapiens</span></td>
+                        <td><span class="author-text">Yuval Noah Harari</span></td>
+                        <td><span class="genre-text">Non-Fiction</span></td>
+                        <td><span class="type-text muted">Book</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">3</a></td>
+                        <td class="align-right"><span class="rating-value">4.0</span></td>
+                        <td class="align-center"><span class="staff-pick-dash">&mdash;</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
+                    </tr>
+                    <!-- Row 9 -->
+                    <tr>
+                        <td><span class="book-title">The Great Gatsby</span></td>
+                        <td><span class="author-text">F. Scott Fitzgerald</span></td>
+                        <td><span class="genre-text">Classic</span></td>
+                        <td><span class="type-text">DVD</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">1</a></td>
+                        <td class="align-right"><span class="rating-value">3.5</span></td>
+                        <td class="align-center"><span class="staff-pick-dash">&mdash;</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
+                    </tr>
+                    <!-- Row 10 -->
+                    <tr>
+                        <td><span class="book-title">Where the Crawdads Sing</span></td>
+                        <td><span class="author-text">Delia Owens</span></td>
+                        <td><span class="genre-text">Literary Fiction</span></td>
+                        <td><span class="type-text muted">Book</span></td>
+                        <td class="align-right"><a href="#" class="copies-link">6</a></td>
+                        <td class="align-right"><span class="rating-value">4.2</span></td>
+                        <td class="align-center"><span class="staff-pick-yes">Yes</span></td>
+                        <td class="action-cell"><button class="btn-action edit">Edit</button><button class="btn-action delete">Delete</button></td>
                     </tr>
                 </tbody>
             </table>
-        </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <a href="#" class="disabled">&larr; Previous</a>
-            <span class="page-info">Page 1 of 52</span>
-            <a href="#">Next &rarr;</a>
-        </div>
+            <!-- PAGINATION -->
+            <div class="pagination-bar">
+                <span class="pagination-info">1&ndash;10 of 1,024 results</span>
+                <div class="pagination-controls">
+                    <a href="#" class="nav-arrow">&laquo; Prev</a>
+                    <a href="#" class="active-page">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <span class="ellipsis">&hellip;</span>
+                    <a href="#">103</a>
+                    <a href="#" class="nav-arrow">Next &raquo;</a>
+                </div>
+            </div>
 
+        </div>
     </main>
 </div>
 
-<!-- ══════════════════ ADD BOOK MODAL ══════════════════ -->
-<div class="modal-backdrop" id="addBookModal">
-    <div class="modal-card">
+<!-- ADD BOOK MODAL -->
+<div class="modal-backdrop">
+    <div class="modal">
         <div class="modal-header">
-            <h2>Add New Book</h2>
-            <button class="modal-close" onclick="document.getElementById('addBookModal').style.display='none'">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
+            <span class="modal-title">Add Book</span>
+            <button class="modal-close">&times;</button>
         </div>
-
-        <div class="form-grid">
-            <div class="form-group full-width">
-                <label>Title <span class="required">*</span></label>
-                <input type="text" placeholder="Enter book title">
-            </div>
-            <div class="form-group full-width">
-                <label>Author <span class="required">*</span></label>
-                <input type="text" placeholder="Enter author name">
-            </div>
-            <div class="form-group">
-                <label>ISBN</label>
-                <input type="text" placeholder="e.g. 0-061-96436-0">
-            </div>
-            <div class="form-group">
-                <label>ISBN-13</label>
-                <input type="text" placeholder="e.g. 978-0-061-96436-7">
-            </div>
-            <div class="form-group">
-                <label>Genre</label>
-                <select>
-                    <option value="" disabled selected>Select genre</option>
-                    <option>Fiction</option>
-                    <option>Non-Fiction</option>
-                    <option>Sci-Fi</option>
-                    <option>Fantasy</option>
-                    <option>Thriller</option>
-                    <option>Romance</option>
-                    <option>Science</option>
-                    <option>Biography</option>
-                    <option>History</option>
-                    <option>Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Item Type</label>
-                <select>
-                    <option value="book" selected>Book</option>
-                    <option value="audiobook">Audiobook</option>
-                    <option value="ebook">Ebook</option>
-                    <option value="dvd">DVD</option>
-                </select>
-            </div>
-            <div class="form-group full-width">
-                <label>Description</label>
-                <textarea placeholder="Brief description of the book..."></textarea>
-            </div>
-            <div class="form-group full-width">
-                <label>Cover Image URL</label>
-                <input type="text" placeholder="https://example.com/cover.jpg">
-            </div>
-            <div class="form-group">
-                <label>Page Count</label>
-                <input type="number" placeholder="e.g. 320">
-            </div>
-            <div class="form-group">
-                <label>Publication Year</label>
-                <input type="number" placeholder="e.g. 1925">
-            </div>
-            <div class="form-group">
-                <label>Publisher</label>
-                <input type="text" placeholder="e.g. Penguin Books">
-            </div>
-            <div class="form-group">
-                <label>Language</label>
-                <input type="text" placeholder="e.g. English" value="English">
-            </div>
-            <div class="form-group">
-                <label>Number of Copies</label>
-                <input type="number" placeholder="e.g. 3" value="1">
-            </div>
-            <div class="form-group">
-                <label>Condition</label>
-                <select>
-                    <option value="new" selected>New</option>
-                    <option value="good">Good</option>
-                    <option value="fair">Fair</option>
-                    <option value="worn">Worn</option>
-                </select>
-            </div>
-            <div class="form-group full-width">
-                <div class="toggle-row">
-                    <div class="toggle-switch active" id="staffPickToggle" onclick="this.classList.toggle('active'); document.getElementById('staffPickNote').style.display = this.classList.contains('active') ? 'block' : 'none';"></div>
-                    <span class="toggle-label">Staff Pick</span>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <span class="form-label">Title <span class="required">*</span></span>
+                    <input type="text" class="form-input" placeholder="Enter title">
                 </div>
-                <div class="staff-pick-note" id="staffPickNote" style="display:block;">
-                    <label>Staff Pick Note</label>
-                    <input type="text" placeholder="Why is this a staff pick?" style="margin-top: 6px;">
+                <div class="form-group">
+                    <span class="form-label">Author <span class="required">*</span></span>
+                    <input type="text" class="form-input" placeholder="Enter author">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">ISBN</span>
+                    <input type="text" class="form-input" placeholder="978-0-000-00000-0">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Genre</span>
+                    <select class="form-select">
+                        <option value="">Select genre</option>
+                        <option>Classic</option>
+                        <option>Dystopian</option>
+                        <option>Literary Fiction</option>
+                        <option>Memoir</option>
+                        <option>Non-Fiction</option>
+                        <option>Science</option>
+                        <option>Science Fiction</option>
+                        <option>Thriller</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Type</span>
+                    <select class="form-select">
+                        <option value="">Select type</option>
+                        <option>Book</option>
+                        <option>Audiobook</option>
+                        <option>DVD</option>
+                        <option>Ebook</option>
+                        <option>Magazine</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Cover URL</span>
+                    <input type="text" class="form-input" placeholder="https://...">
+                </div>
+                <div class="form-group full-width">
+                    <span class="form-label">Description</span>
+                    <textarea class="form-textarea" rows="3" placeholder="Brief description of the book..."></textarea>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Pages</span>
+                    <input type="number" class="form-input" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Year</span>
+                    <input type="number" class="form-input" placeholder="2024">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Publisher</span>
+                    <input type="text" class="form-input" placeholder="Publisher name">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Copies</span>
+                    <input type="number" class="form-input" placeholder="1" value="1">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Condition</span>
+                    <select class="form-select">
+                        <option value="">Select condition</option>
+                        <option>New</option>
+                        <option>Like New</option>
+                        <option>Good</option>
+                        <option>Fair</option>
+                        <option>Poor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Staff Pick</span>
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="staff-pick">
+                        <label for="staff-pick">Feature as staff pick</label>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <span class="form-label">Staff Pick Note</span>
+                    <input type="text" class="form-input" placeholder="Why this is a staff pick...">
                 </div>
             </div>
         </div>
-
-        <div class="modal-actions">
-            <button class="btn-outlined" onclick="document.getElementById('addBookModal').style.display='none'">Cancel</button>
-            <button class="btn-gradient">Add Book</button>
+        <div class="modal-footer">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-submit">Add Book</button>
         </div>
     </div>
 </div>
-
-<!-- ══════════════════ FOOTER ══════════════════ -->
-<footer>
-    <div class="footer-inner">
-        <div class="footer-brand">
-            <a href="#" class="nav-logo">Page<span>Turn</span></a>
-            <p>Your modern library experience. Discover, borrow, and enjoy books from our ever-growing catalogue.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Browse</h4>
-            <ul>
-                <li><a href="#">Staff Picks</a></li>
-                <li><a href="#">New Arrivals</a></li>
-                <li><a href="#">Top Rated</a></li>
-                <li><a href="#">All Genres</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Account</h4>
-            <ul>
-                <li><a href="#">My Loans</a></li>
-                <li><a href="#">Fines &amp; Dues</a></li>
-                <li><a href="#">My Reviews</a></li>
-                <li><a href="#">Settings</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Support</h4>
-            <ul>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Privacy</a></li>
-                <li><a href="#">Terms</a></li>
-                <li><a href="#">Accessibility</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 PageTurn. All rights reserved.</p>
-        <div class="footer-bottom-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Accessibility</a>
-        </div>
-    </div>
-</footer>
 
 </body>
 </html>

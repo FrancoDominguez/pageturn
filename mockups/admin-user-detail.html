@@ -4,830 +4,814 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PageTurn Admin — Mike Chen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; display: flex; flex-direction: column; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* ── NAV BAR ─────────────────────────────────────── */
-        .top-nav {
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 13px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── NAV ─── */
+        .nav {
             background: #0d1117;
-            padding: 0 48px;
-            height: 72px;
+            height: 48px;
             display: flex;
             align-items: center;
-            gap: 32px;
+            padding: 0 20px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,.08);
+            z-index: 200;
+            border-bottom: 1px solid rgba(255,255,255,.06);
         }
-        .logo {
+        .nav-logo {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 18px;
             color: #fff;
             text-decoration: none;
             letter-spacing: -0.5px;
-            flex-shrink: 0;
         }
-        .logo span {
+        .nav-logo span {
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .admin-badge {
-            display: inline-block;
-            background: rgba(255,107,107,.15);
-            color: #ff6b6b;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 50px;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
+            color: #ff6b6b;
+            background: rgba(255,107,107,.12);
+            padding: 3px 8px;
+            border-radius: 4px;
         }
         .nav-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 11px;
             color: #fff;
             cursor: pointer;
         }
 
-        /* ── LAYOUT ──────────────────────────────────────── */
+        /* ─── LAYOUT ─── */
         .layout {
             display: flex;
             flex: 1;
         }
 
-        /* ── SIDEBAR ─────────────────────────────────────── */
+        /* ─── SIDEBAR (collapsed icon-only) ─── */
         .sidebar {
-            width: 240px;
-            background: #fff;
-            border-right: 1px solid #e5e5e5;
-            padding: 32px 0;
+            width: 48px;
+            background: #1e2330;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding-top: 12px;
             position: sticky;
-            top: 72px;
-            height: calc(100vh - 72px);
+            top: 48px;
+            height: calc(100vh - 48px);
             flex-shrink: 0;
+            z-index: 150;
+            transition: width .2s cubic-bezier(.4,0,.2,1);
+            overflow: hidden;
+        }
+        .sidebar:hover {
+            width: 200px;
+            box-shadow: 4px 0 24px rgba(0,0,0,.15);
         }
         .sidebar-nav {
             list-style: none;
-            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
         .sidebar-nav li a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(13,17,23,.55);
+            height: 40px;
+            padding: 0 14px;
+            color: rgba(255,255,255,.4);
             text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
             transition: all .15s;
-            border-left: 3px solid transparent;
+            border-left: 2px solid transparent;
         }
         .sidebar-nav li a:hover {
-            color: #0d1117;
-            background: rgba(13,17,23,.02);
+            color: rgba(255,255,255,.8);
+            background: rgba(255,255,255,.04);
         }
         .sidebar-nav li a.active {
-            color: #0d1117;
-            font-weight: 700;
-            background: rgba(255,107,107,.04);
+            color: #fff;
+            background: rgba(255,255,255,.06);
             border-left-color: #ff6b6b;
         }
         .sidebar-nav li a svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
-            stroke-width: 1.8;
         }
-        .sidebar-back {
-            padding: 16px 24px;
-            border-top: 1px solid #e5e5e5;
+        .sidebar-nav li a .sidebar-label {
+            opacity: 0;
+            transition: opacity .15s;
         }
-        .sidebar-back a {
-            font-size: 13px;
-            font-weight: 600;
-            color: rgba(13,17,23,.45);
-            text-decoration: none;
-            transition: color .15s;
-        }
-        .sidebar-back a:hover {
-            color: #ff6b6b;
+        .sidebar:hover .sidebar-label {
+            opacity: 1;
         }
 
-        /* ── MAIN CONTENT ────────────────────────────────── */
-        .main-content {
+        /* ─── MAIN CONTENT ─── */
+        .main {
             flex: 1;
-            padding: 32px 48px 60px;
             min-width: 0;
-            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Breadcrumb */
+        /* ─── KPI BAR ─── */
+        .kpi-bar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            padding: 0;
+        }
+        .kpi-item {
+            flex: 1;
+            padding: 14px 24px;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .kpi-item:last-child {
+            border-right: none;
+        }
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .kpi-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+        .kpi-value.coral { color: #ff6b6b; }
+        .kpi-value.green { color: #10b981; }
+        .kpi-value.muted { color: #9ca3af; }
+        .kpi-value.blue { color: #3b82f6; }
+
+        /* ─── USER INFO BAR ─── */
+        .user-info-bar {
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 14px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
         .breadcrumb {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            margin-bottom: 24px;
+            gap: 6px;
+            font-size: 12px;
+            color: #9ca3af;
         }
         .breadcrumb a {
             color: #ff6b6b;
             text-decoration: none;
-            font-weight: 600;
-        }
-        .breadcrumb a:hover { text-decoration: underline; }
-        .breadcrumb .sep { color: rgba(13,17,23,.25); }
-        .breadcrumb .current { color: rgba(13,17,23,.45); font-weight: 500; }
-
-        /* ── PROFILE CARD ────────────────────────────────── */
-        .profile-card {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 32px;
-        }
-        .profile-top {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-        .profile-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 24px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .profile-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .profile-name-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 4px;
-        }
-        .profile-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-        }
-        .role-badge {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 700;
-            background: rgba(13,17,23,.06);
-            color: rgba(13,17,23,.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .profile-email {
-            font-size: 14px;
-            color: rgba(13,17,23,.5);
-            margin-bottom: 2px;
-        }
-        .profile-joined {
-            font-size: 13px;
-            color: rgba(13,17,23,.35);
-        }
-        .profile-quick-stats {
-            display: flex;
-            gap: 0;
-        }
-        .quick-stat {
-            text-align: center;
-            padding: 12px 24px;
-            border-right: 1px solid #e5e5e5;
-        }
-        .quick-stat:last-child { border-right: none; }
-        .quick-stat-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 22px;
-            line-height: 1.2;
-        }
-        .quick-stat-value.coral { color: #ff6b6b; }
-        .quick-stat-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: rgba(13,17,23,.4);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
-        .profile-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #e5e5e5;
-        }
-        .btn-outlined {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 28px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            transition: all .15s;
-            text-decoration: none;
-            border: 2px solid #ff6b6b;
-            color: #ff6b6b;
-            background: transparent;
-        }
-        .btn-outlined:hover {
-            background: rgba(255,107,107,.06);
-        }
-        .btn-gradient {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 28px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            cursor: pointer;
-            transition: all .15s;
-            text-decoration: none;
-            border: none;
-            color: #fff;
-            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
-        }
-        .btn-gradient:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(255,107,107,.25);
-        }
-
-        /* ── TABS ────────────────────────────────────────── */
-        .tabs {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 16px 16px 0 0;
-            border-bottom: none;
-            display: flex;
-            gap: 0;
-            padding: 0 8px;
-        }
-        .tab {
-            display: inline-block;
-            padding: 16px 24px;
-            font-size: 14px;
             font-weight: 500;
-            color: rgba(13,17,23,.45);
-            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb .sep {
+            color: #d1d5db;
+        }
+        .breadcrumb .current {
+            color: #6b7280;
+        }
+        .user-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-display-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .user-role-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .user-email {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        .user-joined {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .user-info-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-edit {
+            height: 32px;
+            padding: 0 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .btn-edit:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        .btn-promote {
+            height: 32px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 6px;
+            background: #ff6b6b;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .btn-promote:hover {
+            background: #ef4444;
+        }
+
+        /* ─── CONTENT AREA ─── */
+        .content-area {
+            padding: 20px 32px 40px;
+        }
+
+        /* ─── TAB BAR ─── */
+        .tab-bar {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+        .tab-item {
+            background: none;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0 0 6px 0;
             border-bottom: 2px solid transparent;
             transition: all .15s;
-            cursor: pointer;
         }
-        .tab:hover { color: #0d1117; }
-        .tab.active {
-            color: #0d1117;
+        .tab-item:hover {
+            color: #374151;
+        }
+        .tab-item.active {
+            color: #111827;
             font-weight: 700;
-            border-bottom-color: #ff6b6b;
+            border-bottom-color: #111827;
         }
 
-        /* ── TAB CONTENT ─────────────────────────────────── */
-        .tab-content {
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-top: 1px solid #e5e5e5;
-            border-radius: 0 0 16px 16px;
-            overflow: hidden;
-        }
-
-        /* ── TABLE ───────────────────────────────────────── */
+        /* ─── TABLE ─── */
         table {
             width: 100%;
             border-collapse: collapse;
+            background: #fff;
+            border-radius: 0;
         }
         thead th {
-            text-align: left;
-            padding: 14px 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            color: rgba(13,17,23,.45);
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid #e5e5e5;
-            background: #fafafa;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: transparent;
+            white-space: nowrap;
+            user-select: none;
         }
-        thead th:first-child { padding-left: 24px; }
-        thead th:last-child { padding-right: 24px; }
+        thead th.align-right {
+            text-align: right;
+        }
+        tbody tr {
+            position: relative;
+            transition: background .1s;
+            border-left: 2px solid transparent;
+        }
+        tbody tr:hover {
+            border-left-color: #ff6b6b;
+            background: rgba(255,107,107,.015);
+        }
         tbody td {
-            padding: 16px 20px;
-            font-size: 14px;
-            border-bottom: 1px solid rgba(229,229,229,.5);
+            padding: 0 12px;
+            height: 44px;
+            font-size: 13px;
+            border-bottom: 1px solid #f3f4f6;
             vertical-align: middle;
         }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody td:first-child { padding-left: 24px; }
-        tbody td:last-child { padding-right: 24px; }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        tbody td.align-right {
+            text-align: right;
+        }
 
-        /* Book cell */
-        .book-cell {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .book-cover {
-            width: 42px;
-            height: 60px;
-            border-radius: 8px;
-            flex-shrink: 0;
-            overflow: hidden;
-            background: linear-gradient(135deg, #e5e5e5, #ccc);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .book-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
+        /* Book column */
         .book-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: -0.2px;
-        }
-        .book-author {
-            font-size: 13px;
-            color: rgba(13,17,23,.5);
-            margin-top: 1px;
-        }
-
-        .date-cell {
-            white-space: nowrap;
-            color: rgba(13,17,23,.65);
-            font-size: 13px;
-        }
-        .renewals-cell {
-            color: rgba(13,17,23,.55);
-            font-size: 13px;
+            color: #111827;
             font-weight: 500;
         }
 
-        /* Status pills */
-        .status-pill {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        .status-pill.active { background: rgba(16,185,129,.1); color: #10b981; }
-        .status-pill.overdue { background: rgba(239,68,68,.1); color: #ef4444; }
-        .status-pill.due-soon { background: rgba(245,158,11,.1); color: #f59e0b; }
-        .status-pill.pending { background: rgba(255,107,107,.1); color: #ff6b6b; }
-        .status-pill.waived { background: rgba(156,163,175,.12); color: #9ca3af; }
-
-        /* Reason pill */
-        .reason-pill {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(13,17,23,.06);
-            color: rgba(13,17,23,.55);
+        /* Date column */
+        .date-text {
+            color: #9ca3af;
         }
 
-        /* Action links */
-        .action-link {
+        /* Status column */
+        .status-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 44px;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-dot.overdue { background: #ff6b6b; }
+        .status-dot.due-soon { background: #f59e0b; }
+        .status-dot.active-loan { background: #10b981; }
+        .status-dot.pending { background: #ff6b6b; }
+        .status-dot.paid { background: #10b981; }
+        .status-dot.waived { background: #9ca3af; }
+        .status-text {
+            font-size: 13px;
+            color: #374151;
+        }
+
+        /* Renewals column */
+        .renewals-text {
+            font-size: 13px;
+            color: #6b7280;
+            font-variant-numeric: tabular-nums;
+        }
+        .renewals-text.maxed {
             color: #ff6b6b;
-            font-size: 13px;
+        }
+
+        /* Action column */
+        .action-cell {
+            text-align: right;
+            white-space: nowrap;
+        }
+        .btn-ghost {
+            display: inline-block;
+            height: 26px;
+            line-height: 24px;
+            padding: 0 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
             font-weight: 600;
-            text-decoration: none;
+            color: #9ca3af;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all .15s;
         }
-        .action-link:hover { text-decoration: underline; }
-        .no-action {
-            color: rgba(13,17,23,.2);
-            font-size: 13px;
+        tbody tr:hover .btn-ghost {
+            opacity: 1;
+            color: #ff6b6b;
+            border-color: rgba(255,107,107,.3);
+        }
+        .btn-ghost:hover {
+            background: rgba(255,107,107,.06) !important;
+            border-color: #ff6b6b !important;
+        }
+        .btn-ghost-muted {
+            display: inline-block;
+            height: 26px;
+            line-height: 24px;
+            padding: 0 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d1d5db;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all .15s;
+            margin-left: 4px;
+        }
+        tbody tr:hover .btn-ghost-muted {
+            opacity: 1;
+            color: #9ca3af;
+            border-color: rgba(156,163,175,.3);
+        }
+        .btn-ghost-muted:hover {
+            background: rgba(156,163,175,.06) !important;
+            border-color: #9ca3af !important;
+            color: #6b7280 !important;
+        }
+        .action-dash {
+            color: #e5e7eb;
+            font-size: 12px;
         }
 
-        /* Overdue row */
-        .overdue-row td {
-            background: rgba(255,107,107,.02);
-        }
-
-        /* Amount */
+        /* Amount column */
         .amount {
             font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
+            font-weight: 600;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
         }
-        .amount-pending { color: #ff6b6b; }
-        .amount-waived { color: #9ca3af; }
 
-        /* Section header */
+        /* Reason column */
+        .reason-text {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* ─── SECTION HEADER ─── */
         .section-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 24px 24px 0;
+            margin-top: 32px;
+            margin-bottom: 12px;
         }
         .section-title {
             font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
             font-weight: 700;
-            font-size: 18px;
-            letter-spacing: -0.2px;
+            color: #111827;
         }
-        .count-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 22px;
-            height: 22px;
-            border-radius: 50px;
-            background: rgba(255,107,107,.1);
-            color: #ff6b6b;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 0 7px;
+        .section-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 10px;
         }
+
+        /* ─── TOTAL ROW ─── */
         .total-row {
             display: flex;
             justify-content: flex-end;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 24px;
-            border-top: 1px solid #e5e5e5;
+            padding: 10px 12px;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
         }
         .total-label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            color: rgba(13,17,23,.55);
+            color: #6b7280;
+            margin-right: 6px;
         }
         .total-amount {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 13px;
             color: #ff6b6b;
+            font-variant-numeric: tabular-nums;
         }
     </style>
 </head>
 <body>
 
-<!-- ═══ NAV BAR ═══════════════════════════════════════════ -->
-<nav class="top-nav">
-    <a href="#" class="logo">Page<span>Turn</span></a>
-    <div style="flex:1;"></div>
-    <span class="admin-badge">Admin</span>
-    <div class="nav-avatar">FD</div>
+<!-- NAV -->
+<nav class="nav">
+    <a href="#" class="nav-logo">Page<span>Turn</span></a>
+    <div class="nav-right">
+        <span class="admin-badge">Admin</span>
+        <div class="nav-avatar">FD</div>
+    </div>
 </nav>
 
-<!-- ═══ LAYOUT: SIDEBAR + MAIN ════════════════════════════ -->
 <div class="layout">
 
-    <!-- ── Sidebar ──────────────────────────────────────── -->
+    <!-- SIDEBAR (collapsed, icon-only) -->
     <aside class="sidebar">
         <ul class="sidebar-nav">
             <li>
                 <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                    Dashboard
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    <span class="sidebar-label">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Books
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span class="sidebar-label">Books</span>
                 </a>
             </li>
             <li>
                 <a href="#" class="active">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Users
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span class="sidebar-label">Users</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                    Fines
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="sidebar-label">Fines</span>
                 </a>
             </li>
         </ul>
-        <div class="sidebar-back">
-            <a href="#">Back to Library &rarr;</a>
-        </div>
     </aside>
 
-    <!-- ── Main Content ─────────────────────────────────── -->
-    <main class="main-content">
+    <!-- MAIN -->
+    <main class="main">
 
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-            <a href="#">Users</a>
-            <span class="sep">/</span>
-            <span class="current">Mike Chen</span>
-        </div>
-
-        <!-- ═══ PROFILE CARD ══════════════════════════════ -->
-        <div class="profile-card">
-            <div class="profile-top">
-                <!-- Avatar -->
-                <div class="profile-avatar">MC</div>
-
-                <!-- Info -->
-                <div class="profile-info">
-                    <div class="profile-name-row">
-                        <span class="profile-name">Mike Chen</span>
-                        <span class="role-badge">user</span>
-                    </div>
-                    <div class="profile-email">mike.chen@example.com</div>
-                    <div class="profile-joined">Joined Aug 3, 2024</div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="profile-quick-stats">
-                    <div class="quick-stat">
-                        <div class="quick-stat-value">5</div>
-                        <div class="quick-stat-label">Active Loans</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-value coral">$12.50</div>
-                        <div class="quick-stat-label">Outstanding</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-value">5</div>
-                        <div class="quick-stat-label">Max Loans</div>
-                    </div>
-                </div>
+        <!-- KPI BAR -->
+        <div class="kpi-bar">
+            <div class="kpi-item">
+                <span class="kpi-label">Active Loans</span>
+                <span class="kpi-value green">5</span>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="profile-actions">
-                <button class="btn-outlined">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Edit User
-                </button>
-                <button class="btn-gradient">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    Promote to Admin
-                </button>
+            <div class="kpi-item">
+                <span class="kpi-label">Total Borrowed</span>
+                <span class="kpi-value blue">42</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Outstanding Fines</span>
+                <span class="kpi-value coral">$12.50</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Reviews Written</span>
+                <span class="kpi-value muted">8</span>
+            </div>
+            <div class="kpi-item">
+                <span class="kpi-label">Max Loans</span>
+                <span class="kpi-value muted">5</span>
             </div>
         </div>
 
-        <!-- ═══ TABBED SECTIONS ═══════════════════════════ -->
-        <div class="tabs">
-            <a class="tab active">Current Loans</a>
-            <a class="tab">History</a>
-            <a class="tab">Reservations</a>
-            <a class="tab">Fines</a>
-            <a class="tab">Reviews</a>
+        <!-- USER INFO BAR -->
+        <div class="user-info-bar">
+            <div class="breadcrumb">
+                <a href="#">Users</a>
+                <span class="sep">&rsaquo;</span>
+                <span class="current">Mike Chen</span>
+            </div>
+            <div class="user-info-row">
+                <div class="user-info-left">
+                    <span class="user-display-name">Mike Chen</span>
+                    <span class="user-role-label">user</span>
+                    <span class="user-email">mike.chen@example.com</span>
+                    <span class="user-joined">Joined Aug 3, 2024</span>
+                </div>
+                <div class="user-info-right">
+                    <button class="btn-edit">Edit</button>
+                    <button class="btn-promote">Promote to Admin</button>
+                </div>
+            </div>
         </div>
 
-        <div class="tab-content">
-            <!-- ── CURRENT LOANS TABLE ──────────────────── -->
+        <!-- CONTENT -->
+        <div class="content-area">
+
+            <!-- TAB BAR -->
+            <div class="tab-bar">
+                <button class="tab-item active">Loans</button>
+                <button class="tab-item">History</button>
+                <button class="tab-item">Reservations</button>
+                <button class="tab-item">Fines</button>
+                <button class="tab-item">Reviews</button>
+            </div>
+
+            <!-- CURRENT LOANS TABLE -->
             <table>
                 <thead>
                     <tr>
-                        <th style="width:32%;">Book</th>
+                        <th>Book</th>
                         <th>Checked Out</th>
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Renewals</th>
-                        <th style="text-align:right;">Action</th>
+                        <th class="align-right">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Dune — OVERDUE -->
-                    <tr class="overdue-row">
-                        <td>
-                            <div class="book-cell">
-                                <div class="book-cover">
-                                    <img src="https://covers.openlibrary.org/b/isbn/9780441172719-M.jpg" alt="Dune">
-                                </div>
-                                <div>
-                                    <div class="book-title">Dune</div>
-                                    <div class="book-author">Frank Herbert</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="date-cell">Feb 20, 2026</td>
-                        <td class="date-cell">Mar 6, 2026</td>
-                        <td><span class="status-pill overdue">Overdue</span></td>
-                        <td class="renewals-cell">1 of 2</td>
-                        <td style="text-align:right;"><a href="#" class="action-link">Process Return</a></td>
-                    </tr>
-                    <!-- Sapiens — Due Soon -->
+                    <!-- Row 1 -->
                     <tr>
+                        <td><span class="book-title">Dune</span></td>
+                        <td><span class="date-text">Feb 20, 2026</span></td>
+                        <td><span class="date-text">Mar 6, 2026</span></td>
                         <td>
-                            <div class="book-cell">
-                                <div class="book-cover">
-                                    <img src="https://covers.openlibrary.org/b/isbn/9780062316097-M.jpg" alt="Sapiens">
-                                </div>
-                                <div>
-                                    <div class="book-title">Sapiens</div>
-                                    <div class="book-author">Yuval Noah Harari</div>
-                                </div>
+                            <div class="status-cell">
+                                <span class="status-dot overdue"></span>
+                                <span class="status-text">Overdue</span>
                             </div>
                         </td>
-                        <td class="date-cell">Feb 25, 2026</td>
-                        <td class="date-cell">Mar 11, 2026</td>
-                        <td><span class="status-pill due-soon">Due Soon</span></td>
-                        <td class="renewals-cell">0 of 2</td>
-                        <td style="text-align:right;"><a href="#" class="action-link">Process Return</a></td>
+                        <td><span class="renewals-text">1/2</span></td>
+                        <td class="action-cell">
+                            <button class="btn-ghost">Return</button>
+                            <button class="btn-ghost-muted">Mark Lost</button>
+                        </td>
                     </tr>
-                    <!-- 1984 — Active -->
+                    <!-- Row 2 -->
                     <tr>
+                        <td><span class="book-title">Sapiens</span></td>
+                        <td><span class="date-text">Feb 25, 2026</span></td>
+                        <td><span class="date-text">Mar 11, 2026</span></td>
                         <td>
-                            <div class="book-cell">
-                                <div class="book-cover">
-                                    <img src="https://covers.openlibrary.org/b/isbn/9780451524935-M.jpg" alt="1984">
-                                </div>
-                                <div>
-                                    <div class="book-title">1984</div>
-                                    <div class="book-author">George Orwell</div>
-                                </div>
+                            <div class="status-cell">
+                                <span class="status-dot due-soon"></span>
+                                <span class="status-text">Due Soon</span>
                             </div>
                         </td>
-                        <td class="date-cell">Mar 1, 2026</td>
-                        <td class="date-cell">Mar 15, 2026</td>
-                        <td><span class="status-pill active">Active</span></td>
-                        <td class="renewals-cell">0 of 2</td>
-                        <td style="text-align:right;"><a href="#" class="action-link">Process Return</a></td>
+                        <td><span class="renewals-text">0/2</span></td>
+                        <td class="action-cell">
+                            <button class="btn-ghost">Return</button>
+                            <button class="btn-ghost-muted">Mark Lost</button>
+                        </td>
                     </tr>
-                    <!-- The Alchemist — Active -->
+                    <!-- Row 3 -->
                     <tr>
+                        <td><span class="book-title">1984</span></td>
+                        <td><span class="date-text">Mar 1, 2026</span></td>
+                        <td><span class="date-text">Mar 15, 2026</span></td>
                         <td>
-                            <div class="book-cell">
-                                <div class="book-cover">
-                                    <img src="https://covers.openlibrary.org/b/isbn/9780062315007-M.jpg" alt="The Alchemist">
-                                </div>
-                                <div>
-                                    <div class="book-title">The Alchemist</div>
-                                    <div class="book-author">Paulo Coelho</div>
-                                </div>
+                            <div class="status-cell">
+                                <span class="status-dot active-loan"></span>
+                                <span class="status-text">Active</span>
                             </div>
                         </td>
-                        <td class="date-cell">Mar 3, 2026</td>
-                        <td class="date-cell">Mar 17, 2026</td>
-                        <td><span class="status-pill active">Active</span></td>
-                        <td class="renewals-cell">0 of 2</td>
-                        <td style="text-align:right;"><a href="#" class="action-link">Process Return</a></td>
+                        <td><span class="renewals-text">0/2</span></td>
+                        <td class="action-cell">
+                            <button class="btn-ghost">Return</button>
+                            <button class="btn-ghost-muted">Mark Lost</button>
+                        </td>
                     </tr>
-                    <!-- Educated — Active -->
+                    <!-- Row 4 -->
                     <tr>
+                        <td><span class="book-title">The Alchemist</span></td>
+                        <td><span class="date-text">Mar 3, 2026</span></td>
+                        <td><span class="date-text">Mar 17, 2026</span></td>
                         <td>
-                            <div class="book-cell">
-                                <div class="book-cover">
-                                    <img src="https://covers.openlibrary.org/b/isbn/9780399590504-M.jpg" alt="Educated">
-                                </div>
-                                <div>
-                                    <div class="book-title">Educated</div>
-                                    <div class="book-author">Tara Westover</div>
-                                </div>
+                            <div class="status-cell">
+                                <span class="status-dot active-loan"></span>
+                                <span class="status-text">Active</span>
                             </div>
                         </td>
-                        <td class="date-cell">Mar 5, 2026</td>
-                        <td class="date-cell">Mar 19, 2026</td>
-                        <td><span class="status-pill active">Active</span></td>
-                        <td class="renewals-cell">2 of 2</td>
-                        <td style="text-align:right;"><a href="#" class="action-link">Process Return</a></td>
+                        <td><span class="renewals-text">0/2</span></td>
+                        <td class="action-cell">
+                            <button class="btn-ghost">Return</button>
+                            <button class="btn-ghost-muted">Mark Lost</button>
+                        </td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr>
+                        <td><span class="book-title">Educated</span></td>
+                        <td><span class="date-text">Mar 5, 2026</span></td>
+                        <td><span class="date-text">Mar 19, 2026</span></td>
+                        <td>
+                            <div class="status-cell">
+                                <span class="status-dot active-loan"></span>
+                                <span class="status-text">Active</span>
+                            </div>
+                        </td>
+                        <td><span class="renewals-text maxed">2/2</span></td>
+                        <td class="action-cell">
+                            <button class="btn-ghost">Return</button>
+                            <button class="btn-ghost-muted">Mark Lost</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- ── FINES SECTION ────────────────────────── -->
+            <!-- FINES SUMMARY -->
             <div class="section-header">
                 <span class="section-title">Fines</span>
-                <span class="count-badge">3</span>
+                <span class="section-badge">3 total</span>
             </div>
-            <div style="padding: 0 0 0 0;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width:28%;">Book</th>
-                            <th>Reason</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th style="text-align:right;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- The Hobbit — Pending -->
-                        <tr>
-                            <td>
-                                <div class="book-cell">
-                                    <div class="book-cover">
-                                        <img src="https://covers.openlibrary.org/b/isbn/9780547928227-M.jpg" alt="The Hobbit">
-                                    </div>
-                                    <div>
-                                        <div class="book-title">The Hobbit</div>
-                                        <div class="book-author">J.R.R. Tolkien</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="reason-pill">Late Return</span></td>
-                            <td><span class="amount amount-pending">$3.50</span></td>
-                            <td><span class="status-pill pending">Pending</span></td>
-                            <td class="date-cell">Feb 15, 2026</td>
-                            <td style="text-align:right;"><a href="#" class="action-link">Waive</a></td>
-                        </tr>
-                        <!-- Brave New World — Pending -->
-                        <tr>
-                            <td>
-                                <div class="book-cell">
-                                    <div class="book-cover">
-                                        <img src="https://covers.openlibrary.org/b/isbn/9780060850524-M.jpg" alt="Brave New World">
-                                    </div>
-                                    <div>
-                                        <div class="book-title">Brave New World</div>
-                                        <div class="book-author">Aldous Huxley</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="reason-pill">Late Return</span></td>
-                            <td><span class="amount amount-pending">$6.00</span></td>
-                            <td><span class="status-pill pending">Pending</span></td>
-                            <td class="date-cell">Jan 28, 2026</td>
-                            <td style="text-align:right;"><a href="#" class="action-link">Waive</a></td>
-                        </tr>
-                        <!-- Catch-22 — Waived -->
-                        <tr>
-                            <td>
-                                <div class="book-cell">
-                                    <div class="book-cover">
-                                        <img src="https://covers.openlibrary.org/b/isbn/9781451626650-M.jpg" alt="Catch-22">
-                                    </div>
-                                    <div>
-                                        <div class="book-title">Catch-22</div>
-                                        <div class="book-author">Joseph Heller</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="reason-pill">Late Return</span></td>
-                            <td><span class="amount amount-waived">$3.00</span></td>
-                            <td><span class="status-pill waived">Waived</span></td>
-                            <td class="date-cell">Dec 10, 2025</td>
-                            <td style="text-align:right;"><span class="no-action">&mdash;</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Total Outstanding -->
-                <div class="total-row">
-                    <span class="total-label">Total Outstanding:</span>
-                    <span class="total-amount">$12.50</span>
-                </div>
-            </div>
-        </div>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th class="align-right">Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th class="align-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Fine 1 -->
+                    <tr>
+                        <td><span class="book-title">Brave New World</span></td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$6.00</span></td>
+                        <td>
+                            <div class="status-cell">
+                                <span class="status-dot pending"></span>
+                                <span class="status-text">Pending</span>
+                            </div>
+                        </td>
+                        <td><span class="date-text">Feb 15, 2026</span></td>
+                        <td class="action-cell"><button class="btn-ghost">Waive</button></td>
+                    </tr>
+                    <!-- Fine 2 -->
+                    <tr>
+                        <td><span class="book-title">The Hobbit</span></td>
+                        <td class="align-right"><span class="amount" style="color:#ff6b6b">$3.50</span></td>
+                        <td>
+                            <div class="status-cell">
+                                <span class="status-dot pending"></span>
+                                <span class="status-text">Pending</span>
+                            </div>
+                        </td>
+                        <td><span class="date-text">Feb 10, 2026</span></td>
+                        <td class="action-cell"><button class="btn-ghost">Waive</button></td>
+                    </tr>
+                    <!-- Fine 3 -->
+                    <tr>
+                        <td><span class="book-title">To Kill a Mockingbird</span></td>
+                        <td class="align-right"><span class="amount" style="color:#10b981">$3.00</span></td>
+                        <td>
+                            <div class="status-cell">
+                                <span class="status-dot paid"></span>
+                                <span class="status-text">Paid</span>
+                            </div>
+                        </td>
+                        <td><span class="date-text">Jan 20, 2026</span></td>
+                        <td class="action-cell"><span class="action-dash">&mdash;</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="total-row">
+                <span class="total-label">Outstanding:</span>
+                <span class="total-amount">$12.50</span>
+            </div>
+
+        </div>
     </main>
 </div>
-
-<!-- ═══ FOOTER ════════════════════════════════════════════ -->
-<footer style="background:#0d1117; padding:48px; margin-top:0;">
-    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
-        <div>
-            <a href="#" class="logo" style="font-size:20px;">Page<span>Turn</span></a>
-            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
-        </div>
-        <div style="display:flex; gap:32px;">
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Admin</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
-            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
-        </div>
-        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">&copy; 2026 PageTurn Library. All rights reserved.</p>
-    </div>
-</footer>
 
 </body>
 </html>
