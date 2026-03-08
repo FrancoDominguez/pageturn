@@ -71,11 +71,12 @@ Verify it works before moving on:
 After deployment, write the README following `docs/README_SPEC.md`. Key points:
 - Present it as a product, not an assignment
 - The MCP integration is the headline feature
-- Include the "Why MCP, Not a Chatbot" reasoning
+- Include the "Why MCP, Not a Chatbot" reasoning: Non-power users use the UI. Power users already have their own AI agents — they don't want a chatbot on the website, they want their existing agents to have access to the system. MCP makes the AI interface composable, not locked-in. A chatbot would be annoying to power users and nearly unusable compared to their own agent setup. This is the same principle for any vertical SaaS: don't build a chatbot on every product, build MCP tools that let any AI agent operate the system.
 - Keep it scannable — a hiring manager should get the value in 30 seconds
 - Include screenshots of key pages
 - Include the Claude Desktop config snippet
 - Mention it was built with Claude Code (demonstrates AI-native development)
+- This project is for the Agent Builder role at Manos Software (Valsoft). The README should connect the project to the role: "The same pattern — expose domain operations as MCP tools, let the LLM orchestrate — could be applied to any of Valsoft's 30+ portfolio companies."
 
 ### Git workflow
 - Commit after each phase is complete
