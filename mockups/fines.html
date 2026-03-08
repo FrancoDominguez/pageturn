@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn — Fines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; }
+
+        /* Sub-navigation */
+        .sub-nav { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 0 48px; display: flex; align-items: center; gap: 0; }
+        .sub-nav a { display: inline-block; padding: 18px 24px; font-size: 14px; font-weight: 500; color: rgba(13,17,23,.5); text-decoration: none; border-bottom: 2px solid transparent; transition: color .15s; }
+        .sub-nav a:hover { color: #0d1117; }
+        .sub-nav a.active { color: #0d1117; font-weight: 700; border-bottom-color: #ff6b6b; }
+
+        /* Page header */
+        .page-header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 0;
+        }
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            color: rgba(13,17,23,.5);
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        /* Stat cards row */
+        .stats-row {
+            max-width: 1100px;
+            margin: 32px auto 0;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        .stat-card.outstanding { border-top: 3px solid #ff6b6b; }
+        .stat-card.paid { border-top: 3px solid #10b981; }
+        .stat-card.waived { border-top: 3px solid #9ca3af; }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .stat-amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+        .stat-card.outstanding .stat-amount { color: #ff6b6b; }
+        .stat-card.paid .stat-amount { color: #10b981; }
+        .stat-card.waived .stat-amount { color: #9ca3af; }
+        .stat-sub {
+            font-size: 13px;
+            color: rgba(13,17,23,.4);
+            margin-top: 4px;
+        }
+
+        /* Warning banner */
+        .warning-banner {
+            max-width: 1100px;
+            margin: 20px auto 0;
+            padding: 0 24px;
+        }
+        .warning-banner-inner {
+            background: rgba(255,107,107,.06);
+            border: 1px solid rgba(255,107,107,.2);
+            border-radius: 14px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .warning-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,107,107,.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .warning-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ff6b6b;
+            line-height: 1.5;
+        }
+
+        /* Table container */
+        .table-container {
+            max-width: 1100px;
+            margin: 32px auto 0;
+            padding: 0 24px 60px;
+        }
+        .table-wrap {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead th {
+            text-align: left;
+            padding: 14px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+        thead th:first-child { padding-left: 24px; }
+        thead th:last-child { padding-right: 24px; }
+
+        /* Data rows */
+        tbody td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(229,229,229,.5);
+            vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody td:first-child { padding-left: 24px; }
+        tbody td:last-child { padding-right: 24px; }
+
+        /* Book cell */
+        .book-cell {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .book-cover {
+            width: 42px;
+            height: 60px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e5e5e5, #ccc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .book-cover .placeholder-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 7px;
+            font-weight: 700;
+            color: rgba(13,17,23,.35);
+            text-align: center;
+            padding: 4px;
+            line-height: 1.2;
+        }
+        .book-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+        .book-author {
+            font-size: 13px;
+            color: rgba(13,17,23,.5);
+            margin-top: 1px;
+        }
+
+        /* Reason pill */
+        .reason-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(13,17,23,.06);
+            color: rgba(13,17,23,.55);
+        }
+
+        /* Amount */
+        .amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .amount-pending { color: #ff6b6b; }
+        .amount-paid { color: #10b981; }
+        .amount-waived { color: #9ca3af; }
+
+        /* Status pills */
+        .status-pill {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .status-pending { background: rgba(255,107,107,.1); color: #ff6b6b; }
+        .status-paid { background: rgba(16,185,129,.1); color: #10b981; }
+        .status-waived { background: rgba(156,163,175,.12); color: #9ca3af; }
+
+        .date-cell {
+            white-space: nowrap;
+            color: rgba(13,17,23,.65);
+            font-size: 13px;
+        }
+        .date-sub {
+            font-size: 11px;
+            color: rgba(13,17,23,.35);
+            margin-top: 2px;
+        }
+
+        /* Pending row highlight */
+        .row-pending td {
+            background: rgba(255,107,107,.02);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav style="background:#0d1117; padding:0 48px; height:72px; display:flex; align-items:center; gap:32px; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,.08);">
+    <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:24px; color:#fff; text-decoration:none; letter-spacing:-0.5px; flex-shrink:0;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+    <div style="flex:1; max-width:520px;">
+        <div style="display:flex; align-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:50px; padding:6px 6px 6px 18px; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by title, author, or ISBN..." style="flex:1; border:none; outline:none; font-size:14px; font-family:'DM Sans',sans-serif; color:#fff; background:transparent; padding:6px 0;">
+            <button style="background:#ff6b6b; color:#fff; border:none; padding:8px 22px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer;">Search</button>
+        </div>
+    </div>
+    <ul style="display:flex; align-items:center; gap:28px; list-style:none; flex-shrink:0;">
+        <li><a href="#" style="color:rgba(255,255,255,.7); text-decoration:none; font-size:15px; font-weight:500;">My Loans</a></li>
+        <li><div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; cursor:pointer;">JD</div></li>
+    </ul>
+</nav>
+
+<!-- Sub-nav -->
+<div class="sub-nav">
+    <a href="#">Loans</a>
+    <a href="#">History</a>
+    <a href="#" class="active">Fines</a>
+    <a href="#">Reviews</a>
+    <a href="#">Settings</a>
+</div>
+
+<!-- Page header -->
+<div class="page-header">
+    <h1>Fines</h1>
+    <p>6 total fines &middot; 3 pending</p>
+</div>
+
+<!-- Stat cards -->
+<div class="stats-row">
+    <div class="stat-card outstanding">
+        <div class="stat-label">Outstanding</div>
+        <div class="stat-amount">$9.25</div>
+        <div class="stat-sub">2 pending fines</div>
+    </div>
+    <div class="stat-card paid">
+        <div class="stat-label">Total Paid</div>
+        <div class="stat-amount">$2.25</div>
+        <div class="stat-sub">2 fines paid</div>
+    </div>
+    <div class="stat-card waived">
+        <div class="stat-label">Total Waived</div>
+        <div class="stat-amount">$1.75</div>
+        <div class="stat-sub">1 fine waived</div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30%;">Book</th>
+                    <th>Reason</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Pending -->
+                <tr class="row-pending">
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px; height:56px; border-radius:6px; background:linear-gradient(135deg,#e5e5e5,#ccc); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+                                <span style="font-size:7px; font-weight:700; color:rgba(13,17,23,.35); text-align:center; padding:4px; line-height:1.2; font-family:'Space Grotesk',sans-serif;">The Shining</span>
+                            </div>
+                            <div>
+                                <span class="book-title">The Shining</span>
+                                <span class="book-author">Stephen King</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="reason-pill">Late Return</span></td>
+                    <td><span class="amount amount-pending">$7.75</span></td>
+                    <td><span class="status-pill status-pending">Pending</span></td>
+                    <td class="date-text">Returned Dec 30, 2025<br><span style="font-size:11px; opacity:.6;">31 days &times; $0.25/day</span></td>
+                </tr>
+                <tr class="row-pending">
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px; height:56px; border-radius:6px; background:linear-gradient(135deg,#e5e5e5,#ccc); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+                                <span style="font-size:7px; font-weight:700; color:rgba(13,17,23,.35); text-align:center; padding:4px; line-height:1.2; font-family:'Space Grotesk',sans-serif;">Crime &amp; Punishment</span>
+                            </div>
+                            <div>
+                                <span class="book-title">Crime and Punishment</span>
+                                <span class="book-author">Fyodor Dostoevsky</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="reason-pill">Late Return</span></td>
+                    <td><span class="amount amount-pending">$1.50</span></td>
+                    <td><span class="status-pill status-pending">Pending</span></td>
+                    <td class="date-text">Returned Dec 18, 2025<br><span style="font-size:11px; opacity:.6;">6 days &times; $0.25/day</span></td>
+                </tr>
+
+                <!-- Paid -->
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px; height:56px; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780060850524-M.jpg" alt="Brave New World" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <span class="book-title">Brave New World</span>
+                                <span class="book-author">Aldous Huxley</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="reason-pill">Late Return</span></td>
+                    <td><span class="amount amount-paid">$1.50</span></td>
+                    <td><span class="status-pill status-paid">Paid</span></td>
+                    <td class="date-text">Paid Mar 5, 2026<br><span style="font-size:11px; opacity:.6;">6 days &times; $0.25/day</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px; height:56px; border-radius:6px; background:linear-gradient(135deg,#e5e5e5,#ccc); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+                                <span style="font-size:7px; font-weight:700; color:rgba(13,17,23,.35); text-align:center; padding:4px; line-height:1.2; font-family:'Space Grotesk',sans-serif;">Dune</span>
+                            </div>
+                            <div>
+                                <span class="book-title">Dune</span>
+                                <span class="book-author">Frank Herbert</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="reason-pill">Late Return</span></td>
+                    <td><span class="amount amount-paid">$0.75</span></td>
+                    <td><span class="status-pill status-paid">Paid</span></td>
+                    <td class="date-text">Paid Feb 1, 2026<br><span style="font-size:11px; opacity:.6;">3 days &times; $0.25/day</span></td>
+                </tr>
+
+                <!-- Waived -->
+                <tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:40px; height:56px; border-radius:6px; overflow:hidden; flex-shrink:0;">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780141439471-M.jpg" alt="Frankenstein" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <span class="book-title">Frankenstein</span>
+                                <span class="book-author">Mary Shelley</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="reason-pill">Late Return</span></td>
+                    <td><span class="amount amount-waived">$1.75</span></td>
+                    <td><span class="status-pill status-waived">Waived</span></td>
+                    <td class="date-text">Waived Jan 10, 2026<br><span style="font-size:11px; opacity:.6;">7 days &times; $0.25/day</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p style="margin-top:16px; font-size:13px; color:rgba(13,17,23,.45); line-height:1.6; padding:0 4px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Fines can be paid at the library front desk. Outstanding balances over $10 will prevent new checkouts.
+    </p>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:#0d1117; padding:48px; margin-top:0;">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
+        <div>
+            <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
+        </div>
+        <div style="display:flex; gap:32px;">
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">My Loans</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
+        </div>
+        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">&copy; 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

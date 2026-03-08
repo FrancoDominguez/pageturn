@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Great Gatsby — PageTurn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #fafafa; color: #0d1117; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="background:#0d1117; padding:0 48px; height:72px; display:flex; align-items:center; gap:32px; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,.08);">
+    <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:24px; color:#fff; text-decoration:none; letter-spacing:-0.5px; flex-shrink:0;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+    <div style="flex:1; max-width:520px;">
+        <div style="display:flex; align-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:50px; padding:6px 6px 6px 18px; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by title, author, or ISBN..." style="flex:1; border:none; outline:none; font-size:14px; font-family:'DM Sans',sans-serif; color:#fff; background:transparent; padding:6px 0;">
+            <button style="background:#ff6b6b; color:#fff; border:none; padding:8px 22px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer;">Search</button>
+        </div>
+    </div>
+    <ul style="display:flex; align-items:center; gap:28px; list-style:none; flex-shrink:0;">
+        <li><a href="#" style="color:rgba(255,255,255,.7); text-decoration:none; font-size:15px; font-weight:500;">My Loans</a></li>
+        <li><div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; cursor:pointer;">JD</div></li>
+    </ul>
+</nav>
+
+<!-- BREADCRUMB -->
+<div style="max-width:1200px; margin:0 auto; padding:24px 48px 0;">
+    <nav style="font-size:14px; color:#666; display:flex; align-items:center; gap:8px;">
+        <a href="#" style="color:#ff6b6b; font-weight:500;">Home</a>
+        <span style="color:#ccc;">/</span>
+        <a href="#" style="color:#ff6b6b; font-weight:500;">Fiction</a>
+        <span style="color:#ccc;">/</span>
+        <span style="color:#0d1117; font-weight:500;">The Great Gatsby</span>
+    </nav>
+</div>
+
+<!-- MAIN TWO-COLUMN LAYOUT -->
+<main style="max-width:1200px; margin:0 auto; padding:32px 48px 64px;">
+    <div style="display:flex; gap:48px; align-items:flex-start;">
+
+        <!-- LEFT COLUMN (40%) -->
+        <div style="width:40%; flex-shrink:0;">
+            <!-- Book Cover -->
+            <div style="background:#fff; border-radius:16px; padding:32px; border:1px solid #e5e5e5; text-align:center;">
+                <img src="https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg" alt="The Great Gatsby cover" style="width:100%; max-width:280px; border-radius:8px; box-shadow:0 12px 40px rgba(0,0,0,.18);">
+            </div>
+
+            <!-- Staff Pick Badge -->
+            <div style="margin-top:20px; background:#fff; border-radius:16px; padding:24px 28px; border:2px solid #ff6b6b; position:relative;">
+                <div style="position:absolute; top:-14px; left:24px; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); color:#fff; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12px; padding:4px 16px; border-radius:50px; letter-spacing:0.5px; text-transform:uppercase;">Staff Pick</div>
+                <div style="margin-top:8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b" style="vertical-align:middle; margin-right:6px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span style="font-size:14px; font-weight:600; color:#0d1117; vertical-align:middle;">Librarian's Note</span>
+                </div>
+                <p style="font-size:14px; color:#555; margin-top:10px; line-height:1.6; font-style:italic;">"A timeless meditation on the American Dream — our most-requested title"</p>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN (60%) -->
+        <div style="flex:1; min-width:0;">
+            <!-- Title -->
+            <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:36px; line-height:1.2; letter-spacing:-0.5px; color:#0d1117;">The Great Gatsby</h1>
+
+            <!-- Author -->
+            <p style="margin-top:8px; font-size:17px;">by <a href="#" style="color:#ff6b6b; font-weight:600; border-bottom:1px dashed #ff6b6b;">F. Scott Fitzgerald</a></p>
+
+            <!-- Star Rating -->
+            <div style="margin-top:16px; display:flex; align-items:center; gap:10px;">
+                <div style="display:flex; gap:2px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <span style="font-weight:700; font-size:16px; color:#0d1117;">4.2</span>
+                <span style="font-size:14px; color:#888;">(24 ratings)</span>
+            </div>
+
+            <!-- Genre Pills -->
+            <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                <span style="background:rgba(255,107,107,.1); color:#ff6b6b; font-size:13px; font-weight:600; padding:6px 18px; border-radius:50px; border:1px solid rgba(255,107,107,.2);">Fiction</span>
+                <span style="background:rgba(76,201,240,.1); color:#4cc9f0; font-size:13px; font-weight:600; padding:6px 18px; border-radius:50px; border:1px solid rgba(76,201,240,.2);">Classic</span>
+                <span style="background:rgba(255,107,107,.1); color:#ff6b6b; font-size:13px; font-weight:600; padding:6px 18px; border-radius:50px; border:1px solid rgba(255,107,107,.2);">Literary Fiction</span>
+            </div>
+
+            <!-- Metadata Table -->
+            <div style="margin-top:28px; background:#fff; border-radius:16px; border:1px solid #e5e5e5; overflow:hidden;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+                    <div style="padding:16px 24px; border-bottom:1px solid #e5e5e5; border-right:1px solid #e5e5e5;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Pages</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">180</div>
+                    </div>
+                    <div style="padding:16px 24px; border-bottom:1px solid #e5e5e5;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Published</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">1925</div>
+                    </div>
+                    <div style="padding:16px 24px; border-bottom:1px solid #e5e5e5; border-right:1px solid #e5e5e5;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Format</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">Book</div>
+                    </div>
+                    <div style="padding:16px 24px; border-bottom:1px solid #e5e5e5;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Language</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">English</div>
+                    </div>
+                    <div style="padding:16px 24px; border-right:1px solid #e5e5e5;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">ISBN</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">978-0-7432-7356-5</div>
+                    </div>
+                    <div style="padding:16px 24px;">
+                        <div style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;">Publisher</div>
+                        <div style="font-size:16px; font-weight:600; color:#0d1117; margin-top:4px;">Scribner</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div style="margin-top:28px;">
+                <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; margin-bottom:12px;">About this book</h3>
+                <p style="font-size:15px; color:#444; line-height:1.8;">The Great Gatsby, F. Scott Fitzgerald's third book, stands as the supreme achievement of his career. This exemplary novel of the Jazz Age has been acclaimed by generations of readers. The story of the fabulously wealthy Jay Gatsby and his new love for the beautiful Daisy Buchanan, of lavish parties on Long Island at a time when The New York Times noted "gin was the national drink and sex the national obsession," is an exquisitely crafted tale of America in the 1920s.</p>
+            </div>
+
+            <!-- Availability + Actions -->
+            <div style="margin-top:32px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <!-- Availability Badge -->
+                <div style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2); padding:10px 20px; border-radius:50px;">
+                    <div style="width:10px; height:10px; border-radius:50%; background:#10b981;"></div>
+                    <span style="font-size:14px; font-weight:600; color:#10b981;">2 of 3 copies available</span>
+                </div>
+            </div>
+            <div style="margin-top:20px; display:flex; gap:14px;">
+                <button style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); color:#fff; border:none; padding:14px 40px; border-radius:50px; font-size:16px; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer; letter-spacing:0.3px;">Check Out</button>
+                <!-- Reserve button: shown only when 0 copies available. E.g.:
+                <button style="background:transparent; color:#0d1117; border:2px solid #e5e5e5; padding:14px 40px; border-radius:50px; font-size:16px; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer; letter-spacing:0.3px;">Reserve — #3 in waitlist</button>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEWS SECTION (FULL WIDTH) -->
+    <div style="margin-top:64px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:28px; letter-spacing:-0.5px; margin-bottom:32px;">Ratings & Reviews</h2>
+
+        <div style="display:flex; gap:40px; align-items:flex-start;">
+            <!-- Rating Summary (Left) -->
+            <div style="width:320px; flex-shrink:0; background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:32px;">
+                <div style="text-align:center; margin-bottom:24px;">
+                    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:56px; line-height:1; color:#0d1117;">4.2</div>
+                    <div style="display:flex; justify-content:center; gap:3px; margin-top:10px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </div>
+                    <div style="font-size:14px; color:#888; margin-top:6px;">24 ratings</div>
+                </div>
+
+                <!-- Distribution Bars -->
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; font-weight:600; color:#0d1117; width:24px; text-align:right;">5</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <div style="flex:1; height:10px; background:#e5e5e5; border-radius:50px; overflow:hidden;">
+                            <div style="width:42%; height:100%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); border-radius:50px;"></div>
+                        </div>
+                        <span style="font-size:12px; color:#888; width:32px;">42%</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; font-weight:600; color:#0d1117; width:24px; text-align:right;">4</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <div style="flex:1; height:10px; background:#e5e5e5; border-radius:50px; overflow:hidden;">
+                            <div style="width:28%; height:100%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); border-radius:50px;"></div>
+                        </div>
+                        <span style="font-size:12px; color:#888; width:32px;">28%</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; font-weight:600; color:#0d1117; width:24px; text-align:right;">3</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <div style="flex:1; height:10px; background:#e5e5e5; border-radius:50px; overflow:hidden;">
+                            <div style="width:18%; height:100%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); border-radius:50px;"></div>
+                        </div>
+                        <span style="font-size:12px; color:#888; width:32px;">18%</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; font-weight:600; color:#0d1117; width:24px; text-align:right;">2</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <div style="flex:1; height:10px; background:#e5e5e5; border-radius:50px; overflow:hidden;">
+                            <div style="width:8%; height:100%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); border-radius:50px;"></div>
+                        </div>
+                        <span style="font-size:12px; color:#888; width:32px;">8%</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; font-weight:600; color:#0d1117; width:24px; text-align:right;">1</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <div style="flex:1; height:10px; background:#e5e5e5; border-radius:50px; overflow:hidden;">
+                            <div style="width:4%; height:100%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); border-radius:50px;"></div>
+                        </div>
+                        <span style="font-size:12px; color:#888; width:32px;">4%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review List (Right) -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Review 1 -->
+                <div style="background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:24px 28px;">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff;">SM</div>
+                        <div>
+                            <div style="font-weight:600; font-size:15px; color:#0d1117;">Sarah M.</div>
+                            <div style="font-size:13px; color:#888;">3 days ago</div>
+                        </div>
+                        <div style="margin-left:auto; display:flex; gap:2px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                    </div>
+                    <p style="font-size:15px; color:#444; line-height:1.7;">Fitzgerald's prose is absolutely stunning. Every sentence is crafted like poetry.</p>
+                </div>
+
+                <!-- Review 2 -->
+                <div style="background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:24px 28px;">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#4cc9f0,#ff6b6b); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff;">MT</div>
+                        <div>
+                            <div style="font-weight:600; font-size:15px; color:#0d1117;">Marcus T.</div>
+                            <div style="font-size:13px; color:#888;">1 week ago</div>
+                        </div>
+                        <div style="margin-left:auto; display:flex; gap:2px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                    </div>
+                    <p style="font-size:15px; color:#444; line-height:1.7;">A masterpiece of American literature, though the ending felt abrupt.</p>
+                </div>
+
+                <!-- Review 3 -->
+                <div style="background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:24px 28px;">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#10b981,#4cc9f0); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff;">EK</div>
+                        <div>
+                            <div style="font-weight:600; font-size:15px; color:#0d1117;">Elena K.</div>
+                            <div style="font-size:13px; color:#888;">2 weeks ago</div>
+                        </div>
+                        <div style="margin-left:auto; display:flex; gap:2px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                    </div>
+                    <p style="font-size:15px; color:#444; line-height:1.7;">Beautifully written but I found the characters hard to like.</p>
+                </div>
+
+                <!-- Review 4 -->
+                <div style="background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:24px 28px;">
+                    <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#ff6b6b,#10b981); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff;">JR</div>
+                        <div>
+                            <div style="font-weight:600; font-size:15px; color:#0d1117;">James R.</div>
+                            <div style="font-size:13px; color:#888;">1 month ago</div>
+                        </div>
+                        <div style="margin-left:auto; display:flex; gap:2px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#ff6b6b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                    </div>
+                    <p style="font-size:15px; color:#444; line-height:1.7;">Read it three times now and I discover something new each time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- WRITE A REVIEW SECTION -->
+        <div style="margin-top:48px; background:#fff; border-radius:16px; border:1px solid #e5e5e5; padding:32px 36px;">
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; margin-bottom:6px;">Write a Review</h3>
+            <p style="font-size:14px; color:#888; margin-bottom:24px;">You returned this book on Feb 20, 2026 — share your thoughts!</p>
+
+            <!-- Star Selector -->
+            <div style="margin-bottom:20px;">
+                <label style="font-size:14px; font-weight:600; color:#0d1117; display:block; margin-bottom:10px;">Your Rating</label>
+                <div style="display:flex; gap:6px;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" style="cursor:pointer;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" style="cursor:pointer;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" style="cursor:pointer;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" style="cursor:pointer;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" style="cursor:pointer;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+            </div>
+
+            <!-- Text Area -->
+            <div style="margin-bottom:20px;">
+                <label style="font-size:14px; font-weight:600; color:#0d1117; display:block; margin-bottom:10px;">Your Review</label>
+                <textarea placeholder="What did you think of this book?" style="width:100%; min-height:120px; border:1px solid #e5e5e5; border-radius:14px; padding:16px; font-size:15px; font-family:'DM Sans',sans-serif; resize:vertical; outline:none; color:#0d1117; line-height:1.6;"></textarea>
+            </div>
+
+            <button style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); color:#fff; border:none; padding:12px 36px; border-radius:50px; font-size:15px; font-weight:700; font-family:'Space Grotesk',sans-serif; cursor:pointer;">Submit Review</button>
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer style="background:#0d1117; padding:48px; margin-top:0;">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
+        <div>
+            <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
+        </div>
+        <div style="display:flex; gap:32px;">
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">My Loans</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
+        </div>
+        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">© 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

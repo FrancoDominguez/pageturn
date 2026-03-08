@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn — Loan History (Data Table)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; }
+
+        /* Sub-navigation */
+        .sub-nav {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .sub-nav a {
+            display: inline-block;
+            padding: 18px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(13,17,23,.5);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color .15s;
+        }
+        .sub-nav a:hover { color: #0d1117; }
+        .sub-nav a.active {
+            color: #0d1117;
+            font-weight: 700;
+            border-bottom-color: #ff6b6b;
+        }
+
+        /* Page header */
+        .page-header {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 0;
+        }
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            color: rgba(13,17,23,.5);
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        /* Table container */
+        .table-container {
+            max-width: 1100px;
+            margin: 32px auto 0;
+            padding: 0 24px;
+        }
+        .table-wrap {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead th {
+            text-align: left;
+            padding: 14px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+        thead th:first-child { padding-left: 24px; }
+        thead th:last-child { padding-right: 24px; }
+
+        /* Month group header */
+        .month-row td {
+            padding: 18px 24px 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: rgba(13,17,23,.6);
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+
+        /* Data rows */
+        tbody td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(229,229,229,.5);
+            vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody td:first-child { padding-left: 24px; }
+        tbody td:last-child { padding-right: 24px; }
+
+        /* Book cell */
+        .book-cell {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .book-cover {
+            width: 42px;
+            height: 60px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e5e5e5, #ccc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .book-cover .placeholder-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 7px;
+            font-weight: 700;
+            color: rgba(13,17,23,.35);
+            text-align: center;
+            padding: 4px;
+            line-height: 1.2;
+        }
+        .book-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+        .book-author {
+            font-size: 13px;
+            color: rgba(13,17,23,.5);
+            margin-top: 1px;
+        }
+
+        .date-cell {
+            white-space: nowrap;
+            color: rgba(13,17,23,.65);
+            font-size: 13px;
+        }
+        .duration-cell {
+            color: rgba(13,17,23,.55);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Stars */
+        .stars {
+            color: #f59e0b;
+            font-size: 14px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        .write-review-link {
+            color: #ff6b6b;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .write-review-link:hover { text-decoration: underline; }
+
+        /* Fine */
+        .fine-amount {
+            color: #e53e3e;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .no-fine {
+            color: rgba(13,17,23,.2);
+            font-size: 13px;
+        }
+
+        /* Late row highlight */
+        .late-row td {
+            background: rgba(255,107,107,.02);
+        }
+
+        /* Pagination */
+        .pagination {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 24px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            font-size: 14px;
+            color: rgba(13,17,23,.5);
+        }
+        .pagination a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .pagination a.disabled {
+            color: rgba(13,17,23,.25);
+            pointer-events: none;
+        }
+        .pagination .page-info { font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav style="background:#0d1117; padding:0 48px; height:72px; display:flex; align-items:center; gap:32px; position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,.08);">
+    <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:24px; color:#fff; text-decoration:none; letter-spacing:-0.5px; flex-shrink:0;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+    <div style="flex:1; max-width:520px;">
+        <div style="display:flex; align-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:50px; padding:6px 6px 6px 18px; gap:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by title, author, or ISBN..." style="flex:1; border:none; outline:none; font-size:14px; font-family:'DM Sans',sans-serif; color:#fff; background:transparent; padding:6px 0;">
+            <button style="background:#ff6b6b; color:#fff; border:none; padding:8px 22px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer;">Search</button>
+        </div>
+    </div>
+    <ul style="display:flex; align-items:center; gap:28px; list-style:none; flex-shrink:0;">
+        <li><a href="#" style="color:rgba(255,255,255,.7); text-decoration:none; font-size:15px; font-weight:500;">My Loans</a></li>
+        <li><div style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ff6b6b,#4cc9f0); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; cursor:pointer;">JD</div></li>
+    </ul>
+</nav>
+
+<!-- Sub-nav -->
+<div class="sub-nav">
+    <a href="#">Loans</a>
+    <a href="#" class="active">History</a>
+    <a href="#">Fines</a>
+    <a href="#">Reviews</a>
+    <a href="#">Settings</a>
+</div>
+
+<!-- Page header -->
+<div class="page-header">
+    <h1>Loan History</h1>
+    <p>28 books returned &middot; Showing page 1 of 4</p>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:35%;">Book</th>
+                    <th>Borrowed</th>
+                    <th>Returned</th>
+                    <th>Duration</th>
+                    <th>Review</th>
+                    <th style="text-align:right;">Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- March 2026 -->
+                <tr class="month-row">
+                    <td colspan="6">March 2026</td>
+                </tr>
+                <tr class="late-row">
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780060850524-M.jpg" alt="Brave New World">
+                            </div>
+                            <div>
+                                <div class="book-title">Brave New World</div>
+                                <div class="book-author">Aldous Huxley</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Feb 10, 2026</td>
+                    <td class="date-cell">Mar 2, 2026</td>
+                    <td class="duration-cell">20 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></td>
+                    <td style="text-align:right;"><span class="fine-amount">$1.50</span></td>
+                </tr>
+
+                <!-- February 2026 -->
+                <tr class="month-row">
+                    <td colspan="6">February 2026</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <div class="placeholder-text">Fahrenheit 451</div>
+                            </div>
+                            <div>
+                                <div class="book-title">Fahrenheit 451</div>
+                                <div class="book-author">Ray Bradbury</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Feb 15, 2026</td>
+                    <td class="date-cell">Feb 28, 2026</td>
+                    <td class="duration-cell">13 days</td>
+                    <td><a href="#" class="write-review-link">Write Review</a></td>
+                    <td style="text-align:right;"><span class="no-fine">&mdash;</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780316769488-M.jpg" alt="The Catcher in the Rye">
+                            </div>
+                            <div>
+                                <div class="book-title">The Catcher in the Rye</div>
+                                <div class="book-author">J.D. Salinger</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Jan 20, 2026</td>
+                    <td class="date-cell">Feb 3, 2026</td>
+                    <td class="duration-cell">14 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+                    <td style="text-align:right;"><span class="no-fine">&mdash;</span></td>
+                </tr>
+
+                <!-- January 2026 -->
+                <tr class="month-row">
+                    <td colspan="6">January 2026</td>
+                </tr>
+                <tr class="late-row">
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <div class="placeholder-text">Dune</div>
+                            </div>
+                            <div>
+                                <div class="book-title">Dune</div>
+                                <div class="book-author">Frank Herbert</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Jan 10, 2026</td>
+                    <td class="date-cell">Jan 27, 2026</td>
+                    <td class="duration-cell">17 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></td>
+                    <td style="text-align:right;"><span class="fine-amount">$0.75</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780141441146-M.jpg" alt="Jane Eyre">
+                            </div>
+                            <div>
+                                <div class="book-title">Jane Eyre</div>
+                                <div class="book-author">Charlotte Bront&euml;</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Jan 15, 2026</td>
+                    <td class="date-cell">Jan 29, 2026</td>
+                    <td class="duration-cell">14 days</td>
+                    <td><a href="#" class="write-review-link">Write Review</a></td>
+                    <td style="text-align:right;"><span class="no-fine">&mdash;</span></td>
+                </tr>
+                <tr class="late-row">
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780141439471-M.jpg" alt="Frankenstein">
+                            </div>
+                            <div>
+                                <div class="book-title">Frankenstein</div>
+                                <div class="book-author">Mary Shelley</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Dec 15, 2025</td>
+                    <td class="date-cell">Jan 5, 2026</td>
+                    <td class="duration-cell">21 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9734;&#9734;</span></td>
+                    <td style="text-align:right;"><span class="fine-amount">$1.75</span></td>
+                </tr>
+
+                <!-- December 2025 -->
+                <tr class="month-row">
+                    <td colspan="6">December 2025</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <img src="https://covers.openlibrary.org/b/isbn/9780140268867-M.jpg" alt="The Odyssey">
+                            </div>
+                            <div>
+                                <div class="book-title">The Odyssey</div>
+                                <div class="book-author">Homer</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Dec 8, 2025</td>
+                    <td class="date-cell">Dec 22, 2025</td>
+                    <td class="duration-cell">14 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></td>
+                    <td style="text-align:right;"><span class="no-fine">&mdash;</span></td>
+                </tr>
+                <tr class="late-row">
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <div class="placeholder-text">Crime and Punishment</div>
+                            </div>
+                            <div>
+                                <div class="book-title">Crime and Punishment</div>
+                                <div class="book-author">Fyodor Dostoevsky</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Nov 28, 2025</td>
+                    <td class="date-cell">Dec 18, 2025</td>
+                    <td class="duration-cell">20 days</td>
+                    <td><a href="#" class="write-review-link">Write Review</a></td>
+                    <td style="text-align:right;"><span class="fine-amount">$1.50</span></td>
+                </tr>
+                <tr class="late-row">
+                    <td>
+                        <div class="book-cell">
+                            <div class="book-cover">
+                                <div class="placeholder-text">The Shining</div>
+                            </div>
+                            <div>
+                                <div class="book-title">The Shining</div>
+                                <div class="book-author">Stephen King</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="date-cell">Nov 15, 2025</td>
+                    <td class="date-cell">Dec 30, 2025</td>
+                    <td class="duration-cell">45 days</td>
+                    <td><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span></td>
+                    <td style="text-align:right;"><span class="fine-amount">$7.75</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+    <a href="#" class="disabled">&larr; Previous</a>
+    <span class="page-info">Page 1 of 3</span>
+    <a href="#">Next &rarr;</a>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:#0d1117; padding:48px; margin-top:0;">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
+        <div>
+            <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
+        </div>
+        <div style="display:flex; gap:32px;">
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">My Loans</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
+        </div>
+        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">&copy; 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

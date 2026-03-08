@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn — Your Library, Curated</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fafafa;
+            color: #0d1117;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAV ── */
+        nav {
+            background: #0d1117;
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+
+        .nav-logo span {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── NAV SEARCH BAR ── */
+        .nav-search {
+            flex: 1;
+            max-width: 520px;
+        }
+
+        .nav-search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 50px;
+            padding: 6px 6px 6px 18px;
+            gap: 10px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .nav-search-bar:focus-within {
+            background: rgba(255,255,255,.12);
+            border-color: rgba(255,107,107,.4);
+        }
+
+        .nav-search-bar .search-icon {
+            flex-shrink: 0;
+            color: rgba(255,255,255,.4);
+        }
+
+        .nav-search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            color: #fff;
+            background: transparent;
+            padding: 6px 0;
+        }
+
+        .nav-search-bar input::placeholder {
+            color: rgba(255,255,255,.35);
+        }
+
+        .nav-search-btn {
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+
+        .nav-search-btn:hover {
+            background: #ff5252;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+            flex-shrink: 0;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,.7);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color .2s;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links .nav-cta {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: opacity .2s;
+        }
+
+        .nav-links .nav-cta:hover {
+            opacity: .9;
+            color: #fff;
+        }
+
+        /* ── FEATURED BOOK HERO ── */
+        .featured-hero {
+            background: #0d1117;
+            padding: 100px 24px 110px;
+            overflow: hidden;
+        }
+
+        .featured-hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 64px;
+        }
+
+        .featured-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .featured-label {
+            display: inline-block;
+            background: rgba(255,107,107,.15);
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,107,107,.25);
+            margin-bottom: 24px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .featured-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(36px, 5vw, 56px);
+            color: #fff;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 12px;
+        }
+
+        .featured-author {
+            font-size: 18px;
+            color: rgba(255,255,255,.5);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .featured-desc {
+            font-size: 16px;
+            color: rgba(255,255,255,.45);
+            line-height: 1.7;
+            max-width: 440px;
+            margin-bottom: 24px;
+        }
+
+        .featured-stars {
+            color: #ff6b6b;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-bottom: 32px;
+        }
+
+        .featured-stars .rating-number {
+            color: rgba(255,255,255,.6);
+            font-size: 15px;
+            letter-spacing: 0;
+            margin-left: 4px;
+        }
+
+        .featured-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            color: #fff;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: opacity .2s, transform .15s;
+        }
+
+        .featured-cta:hover {
+            opacity: .9;
+            transform: translateY(-2px);
+        }
+
+        .featured-cover {
+            flex-shrink: 0;
+            position: relative;
+            width: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .featured-cover-glow {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            background: linear-gradient(135deg, rgba(255,107,107,.35), rgba(76,201,240,.35));
+            border-radius: 16px;
+            filter: blur(40px);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .featured-cover img {
+            position: relative;
+            z-index: 1;
+            width: 240px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 24px 80px rgba(0,0,0,.5);
+            transform: rotate(3deg);
+            transition: transform .3s;
+        }
+
+        .featured-cover:hover img {
+            transform: rotate(0deg) scale(1.03);
+        }
+
+        /* ── ACCORDION SECTIONS (from C2) ── */
+        .accordion-container {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 56px 24px 0;
+        }
+
+        .genre-accordion {
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .genre-accordion:first-child {
+            border-top: 2px solid #e5e5e5;
+        }
+
+        .genre-accordion summary {
+            display: flex;
+            align-items: center;
+            padding: 24px 0;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+
+        .genre-accordion summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .genre-accordion summary::marker {
+            display: none;
+            content: '';
+        }
+
+        .accordion-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+            color: #0d1117;
+            flex: 1;
+        }
+
+        .accordion-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ff6b6b;
+            background: rgba(255,107,107,.1);
+            padding: 4px 14px;
+            border-radius: 50px;
+            margin-right: 20px;
+        }
+
+        .chevron {
+            width: 24px;
+            height: 24px;
+            color: #999;
+            transition: transform .3s ease;
+            flex-shrink: 0;
+        }
+
+        .genre-accordion[open] .chevron {
+            transform: rotate(180deg);
+        }
+
+        .genre-accordion summary:hover .accordion-title {
+            color: #ff6b6b;
+        }
+
+        .genre-accordion summary:hover .chevron {
+            color: #ff6b6b;
+        }
+
+        /* ── HORIZONTAL SCROLL CARDS (from C2) ── */
+        .scroll-row {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 8px 4px 32px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .scroll-row::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .scroll-row::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .scroll-row::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .scroll-row::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+
+        .scroll-card {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            width: 200px;
+            background: #fff;
+            border-radius: 14px;
+            border: 2px solid #e5e5e5;
+            overflow: hidden;
+            transition: transform .25s, box-shadow .25s, border-color .25s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .scroll-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,.1);
+            border-color: #ff6b6b;
+        }
+
+        .scroll-card-cover {
+            position: relative;
+            background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .scroll-card-cover img {
+            height: 170px;
+            width: auto;
+            border-radius: 3px;
+            box-shadow: 0 6px 16px rgba(0,0,0,.12);
+            transition: transform .3s;
+        }
+
+        .scroll-card:hover .scroll-card-cover img {
+            transform: scale(1.03);
+        }
+
+        .scroll-card-cover .placeholder-cover {
+            width: 110px;
+            height: 170px;
+            background: linear-gradient(135deg, #ddd, #bbb);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: #6b7280;
+            box-shadow: 0 6px 16px rgba(0,0,0,.12);
+            text-align: center;
+            padding: 10px;
+            line-height: 1.2;
+        }
+
+        .scroll-card-info {
+            padding: 14px 16px 16px;
+        }
+
+        .scroll-card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+            line-height: 1.3;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .scroll-card-author {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .scroll-card-stars {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .scroll-card-availability {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .scroll-card-availability.available {
+            background: rgba(16,185,129,.1);
+            color: #10b981;
+        }
+
+        .scroll-card-availability.due {
+            background: rgba(245,158,11,.1);
+            color: #f59e0b;
+        }
+
+        /* ── CTA BANNER ── */
+        .cta-banner {
+            background: #0d1117;
+            padding: 80px 24px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .cta-banner h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(28px, 4vw, 40px);
+            color: #fff;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .cta-banner p {
+            color: rgba(255,255,255,.6);
+            font-size: 17px;
+            margin-bottom: 32px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-banner .cta-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            color: #fff;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: opacity .2s, transform .15s;
+        }
+
+        .cta-banner .cta-btn:hover {
+            opacity: .9;
+            transform: translateY(-2px);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #0d1117;
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding: 48px 48px 32px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand .nav-logo {
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            color: rgba(255,255,255,.4);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 280px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul a {
+            color: rgba(255,255,255,.4);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color .2s;
+        }
+
+        .footer-col ul a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            color: rgba(255,255,255,.3);
+            font-size: 13px;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-bottom-links a {
+            color: rgba(255,255,255,.3);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: rgba(255,255,255,.6);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .featured-hero-inner {
+                flex-direction: column;
+                text-align: center;
+                gap: 48px;
+            }
+            .featured-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .featured-cover {
+                width: 260px;
+            }
+            .featured-cover img {
+                width: 200px;
+            }
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 20px;
+            }
+            .nav-links .hide-mobile {
+                display: none;
+            }
+            .search-strip {
+                padding: 16px 16px;
+            }
+            .genres-compact {
+                gap: 6px;
+            }
+            .genre-pill {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .featured-hero {
+                padding: 48px 20px;
+            }
+            .featured-title {
+                letter-spacing: -1px;
+            }
+            .accordion-container {
+                padding: 40px 16px 0;
+            }
+            .accordion-title {
+                font-size: 20px;
+            }
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            footer {
+                padding: 48px 20px 32px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a href="option-c4-home.html" class="nav-logo">Page<span>Turn</span></a>
+        <div class="nav-search">
+            <div class="nav-search-bar">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search by title, author, or ISBN...">
+                <button class="nav-search-btn">Search</button>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="hide-mobile">My Loans</a></li>
+            <li><a href="#" class="nav-cta">Sign In</a></li>
+        </ul>
+    </nav>
+    <!-- SEARCH RESULTS STATE: When a user submits a search query from the nav bar,
+         this page transitions from the accordion browse layout to a grid results view
+         with filter chips (genre, item type), sort dropdown, BookCard grid, and pagination.
+         Clearing the search returns to the browse layout below. -->
+
+    <!-- FEATURED BOOK HERO -->
+    <section class="featured-hero">
+        <div class="featured-hero-inner">
+            <div class="featured-text">
+                <div class="featured-label">Staff Pick of the Week</div>
+                <h1 class="featured-title">The Great<br>Gatsby</h1>
+                <div class="featured-author">by F. Scott Fitzgerald</div>
+                <p class="featured-desc">A masterful portrait of the Jazz Age and a cautionary tale of the American Dream. Fitzgerald's most celebrated work remains as relevant today as when it was first published.</p>
+                <div class="featured-stars">&#9733;&#9733;&#9733;&#9733;&#9734; <span class="rating-number">4.2</span></div>
+                <a href="#" class="featured-cta">Check Out</a>
+            </div>
+            <div class="featured-cover">
+                <div class="featured-cover-glow"></div>
+                <img src="https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg" alt="The Great Gatsby">
+            </div>
+        </div>
+    </section>
+
+    <!-- ACCORDION GENRE SECTIONS -->
+    <div class="accordion-container">
+
+        <!-- 1. Staff Picks (open by default) -->
+        <details class="genre-accordion" open>
+            <summary>
+                <span class="accordion-title">Staff Picks</span>
+                <span class="accordion-count">15 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <!-- The Great Gatsby -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780743273565-M.jpg" alt="The Great Gatsby" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Great Gatsby</div>
+                        <div class="scroll-card-author">F. Scott Fitzgerald</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.2</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- To Kill a Mockingbird -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780061120084-M.jpg" alt="To Kill a Mockingbird" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">To Kill a Mockingbird</div>
+                        <div class="scroll-card-author">Harper Lee</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.8</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Pride and Prejudice -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780141439518-M.jpg" alt="Pride and Prejudice" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Pride and Prejudice</div>
+                        <div class="scroll-card-author">Jane Austen</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.6</div>
+                        <span class="scroll-card-availability due">Due Apr 15</span>
+                    </div>
+                </a>
+                <!-- The Hobbit -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780547928227-M.jpg" alt="The Hobbit" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Hobbit</div>
+                        <div class="scroll-card-author">J.R.R. Tolkien</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.7</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Brave New World -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780060850524-M.jpg" alt="Brave New World" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Brave New World</div>
+                        <div class="scroll-card-author">Aldous Huxley</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.3</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 2. Top Rated (open by default) -->
+        <details class="genre-accordion" open>
+            <summary>
+                <span class="accordion-title">Top Rated</span>
+                <span class="accordion-count">20 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <!-- 1984 -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780451524935-M.jpg" alt="1984" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">1984</div>
+                        <div class="scroll-card-author">George Orwell</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.5</div>
+                        <span class="scroll-card-availability due">Due Apr 15</span>
+                    </div>
+                </a>
+                <!-- The Catcher in the Rye -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780316769488-M.jpg" alt="The Catcher in the Rye" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Catcher in the Rye</div>
+                        <div class="scroll-card-author">J.D. Salinger</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Lord of the Rings -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780618640157-M.jpg" alt="The Lord of the Rings" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Lord of the Rings</div>
+                        <div class="scroll-card-author">J.R.R. Tolkien</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.8</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Jane Eyre -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780141441146-M.jpg" alt="Jane Eyre" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Jane Eyre</div>
+                        <div class="scroll-card-author">Charlotte Bront&euml;</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.4</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+                <!-- Frankenstein -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780141439471-M.jpg" alt="Frankenstein" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Frankenstein</div>
+                        <div class="scroll-card-author">Mary Shelley</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.1</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 3. Fiction (collapsed) -->
+        <details class="genre-accordion">
+            <summary>
+                <span class="accordion-title">Fiction</span>
+                <span class="accordion-count">24 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <!-- Great Expectations -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780141439563-M.jpg" alt="Great Expectations" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Great Expectations</div>
+                        <div class="scroll-card-author">Charles Dickens</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.1</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Wuthering Heights -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780141439556-M.jpg" alt="Wuthering Heights" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Wuthering Heights</div>
+                        <div class="scroll-card-author">Emily Bront&euml;</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0</div>
+                        <span class="scroll-card-availability due">Due Apr 15</span>
+                    </div>
+                </a>
+                <!-- The Odyssey -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780140268867-M.jpg" alt="The Odyssey" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Odyssey</div>
+                        <div class="scroll-card-author">Homer</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.3</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Crime and Punishment -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780140449136-M.jpg" alt="Crime and Punishment" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Crime and Punishment</div>
+                        <div class="scroll-card-author">Fyodor Dostoevsky</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.4</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 4. Science Fiction & Fantasy (collapsed) -->
+        <details class="genre-accordion">
+            <summary>
+                <span class="accordion-title">Science Fiction &amp; Fantasy</span>
+                <span class="accordion-count">31 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <!-- Fahrenheit 451 -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9781451673319-M.jpg" alt="Fahrenheit 451" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Fahrenheit 451</div>
+                        <div class="scroll-card-author">Ray Bradbury</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.3</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- The Hitchhiker's Guide -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780345391803-M.jpg" alt="The Hitchhiker's Guide to the Galaxy" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Hitchhiker's Guide</div>
+                        <div class="scroll-card-author">Douglas Adams</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.7</div>
+                        <span class="scroll-card-availability due">Due Apr 15</span>
+                    </div>
+                </a>
+                <!-- Ender's Game -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780812550702-M.jpg" alt="Ender's Game" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Ender's Game</div>
+                        <div class="scroll-card-author">Orson Scott Card</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.5</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <!-- Neuromancer -->
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <img src="https://covers.openlibrary.org/b/isbn/9780441569595-M.jpg" alt="Neuromancer" loading="lazy">
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Neuromancer</div>
+                        <div class="scroll-card-author">William Gibson</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 5. Mystery & Thriller (collapsed) -->
+        <details class="genre-accordion">
+            <summary>
+                <span class="accordion-title">Mystery &amp; Thriller</span>
+                <span class="accordion-count">18 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">The Silent Patient</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Silent Patient</div>
+                        <div class="scroll-card-author">Alex Michaelides</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.1</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Gone Girl</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Gone Girl</div>
+                        <div class="scroll-card-author">Gillian Flynn</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0</div>
+                        <span class="scroll-card-availability due">Due Apr 22</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">The Girl on the Train</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Girl on the Train</div>
+                        <div class="scroll-card-author">Paula Hawkins</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9734;&#9734; 3.9</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">The Da Vinci Code</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Da Vinci Code</div>
+                        <div class="scroll-card-author">Dan Brown</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 6. Non-Fiction (collapsed) -->
+        <details class="genre-accordion">
+            <summary>
+                <span class="accordion-title">Non-Fiction</span>
+                <span class="accordion-count">15 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Sapiens</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Sapiens</div>
+                        <div class="scroll-card-author">Yuval Noah Harari</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.4</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Thinking, Fast and Slow</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Thinking, Fast and Slow</div>
+                        <div class="scroll-card-author">Daniel Kahneman</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.2</div>
+                        <span class="scroll-card-availability due">Due May 1</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Atomic Habits</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Atomic Habits</div>
+                        <div class="scroll-card-author">James Clear</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.7</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Educated</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Educated</div>
+                        <div class="scroll-card-author">Tara Westover</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.5</div>
+                        <span class="scroll-card-availability due">Due Apr 15</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+        <!-- 7. New Arrivals (collapsed) -->
+        <details class="genre-accordion">
+            <summary>
+                <span class="accordion-title">New Arrivals</span>
+                <span class="accordion-count">12 books</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="scroll-row">
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Tomorrow, and Tomorrow</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Tomorrow, and Tomorrow</div>
+                        <div class="scroll-card-author">Gabrielle Zevin</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.3</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Lessons in Chemistry</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Lessons in Chemistry</div>
+                        <div class="scroll-card-author">Bonnie Garmus</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.1</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">Demon Copperhead</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">Demon Copperhead</div>
+                        <div class="scroll-card-author">Barbara Kingsolver</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9733; 4.6</div>
+                        <span class="scroll-card-availability due">Due Apr 30</span>
+                    </div>
+                </a>
+                <a href="#" class="scroll-card">
+                    <div class="scroll-card-cover">
+                        <div class="placeholder-cover">The Midnight Library</div>
+                    </div>
+                    <div class="scroll-card-info">
+                        <div class="scroll-card-title">The Midnight Library</div>
+                        <div class="scroll-card-author">Matt Haig</div>
+                        <div class="scroll-card-stars">&#9733;&#9733;&#9733;&#9733;&#9734; 4.2</div>
+                        <span class="scroll-card-availability available">Available</span>
+                    </div>
+                </a>
+            </div>
+        </details>
+
+    </div>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+        <h2>Ready to start reading?</h2>
+        <p>Create a free account to check out books, build reading lists, and get personalized recommendations.</p>
+        <a href="#" class="cta-btn">Create Your Free Account</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="#" class="nav-logo">Page<span>Turn</span></a>
+                <p>Your modern library experience. Discover, borrow, and enjoy books from our ever-growing catalogue.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Browse</h4>
+                <ul>
+                    <li><a href="#">Staff Picks</a></li>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Top Rated</a></li>
+                    <li><a href="#">All Genres</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="#">My Loans</a></li>
+                    <li><a href="#">Fines &amp; Dues</a></li>
+                    <li><a href="#">My Reviews</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 PageTurn. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Accessibility</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
