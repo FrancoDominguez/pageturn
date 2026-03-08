@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn Admin — Fines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* NAV */
+        .nav {
+            background: #0d1117;
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+        .nav-logo span {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(255,107,107,.15);
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* LAYOUT */
+        .layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e5e5;
+            padding: 32px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 72px;
+            height: calc(100vh - 72px);
+            flex-shrink: 0;
+        }
+        .sidebar-links {
+            list-style: none;
+            flex: 1;
+        }
+        .sidebar-links li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(13,17,23,.55);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all .15s;
+        }
+        .sidebar-links li a:hover {
+            color: #0d1117;
+            background: rgba(13,17,23,.02);
+        }
+        .sidebar-links li a.active {
+            color: #ff6b6b;
+            font-weight: 700;
+            border-left-color: #ff6b6b;
+            background: rgba(255,107,107,.04);
+        }
+        .sidebar-links li a svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-back {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e5e5;
+            margin-top: auto;
+        }
+        .sidebar-back a {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .sidebar-back a:hover {
+            color: #ff6b6b;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 40px 48px 60px;
+        }
+
+        /* PAGE HEADER */
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            color: rgba(13,17,23,.5);
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        /* STAT CARDS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        .stat-card.outstanding { border-top: 3px solid #ff6b6b; }
+        .stat-card.collected { border-top: 3px solid #10b981; }
+        .stat-card.waived { border-top: 3px solid #9ca3af; }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .stat-amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+        .stat-card.outstanding .stat-amount { color: #ff6b6b; }
+        .stat-card.collected .stat-amount { color: #10b981; }
+        .stat-card.waived .stat-amount { color: #9ca3af; }
+        .stat-sub {
+            font-size: 13px;
+            color: rgba(13,17,23,.4);
+            margin-top: 4px;
+        }
+
+        /* FILTER TABS */
+        .filter-tabs {
+            margin-top: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            gap: 8px;
+        }
+        .filter-tab {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all .15s;
+            border: none;
+            background: #f3f4f6;
+            color: #0d1117;
+        }
+        .filter-tab:hover {
+            background: #e5e5e5;
+        }
+        .filter-tab.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        /* TABLE */
+        .table-container {
+            margin-top: 24px;
+        }
+        .table-wrap {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+        thead th:first-child { padding-left: 24px; }
+        thead th:last-child { padding-right: 24px; text-align: right; }
+        tbody td {
+            padding: 14px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(229,229,229,.5);
+            vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody td:first-child { padding-left: 24px; }
+        tbody td:last-child { padding-right: 24px; text-align: right; }
+
+        /* User cell */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Book cell */
+        .book-info .book-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: -0.2px;
+            display: block;
+        }
+        .book-info .book-author {
+            font-size: 12px;
+            color: rgba(13,17,23,.45);
+            margin-top: 1px;
+            display: block;
+        }
+
+        /* Reason pill */
+        .reason-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .reason-late { background: rgba(13,17,23,.06); color: rgba(13,17,23,.55); }
+        .reason-lost { background: rgba(239,68,68,.08); color: #ef4444; }
+        .reason-damaged { background: rgba(245,158,11,.08); color: #f59e0b; }
+
+        /* Amount */
+        .amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .amount-pending { color: #ff6b6b; }
+        .amount-paid { color: #10b981; }
+        .amount-waived { color: #9ca3af; }
+
+        /* Status pill */
+        .status-pill {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .status-pending { background: rgba(255,107,107,.1); color: #ff6b6b; }
+        .status-paid { background: rgba(16,185,129,.1); color: #10b981; }
+        .status-waived { background: rgba(156,163,175,.12); color: #9ca3af; }
+
+        .date-cell {
+            white-space: nowrap;
+            color: rgba(13,17,23,.65);
+            font-size: 13px;
+        }
+
+        /* Pending row tint */
+        .row-pending td {
+            background: rgba(255,107,107,.03);
+        }
+
+        /* Action link */
+        .action-waive {
+            color: #ff6b6b;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .action-waive:hover {
+            text-decoration: underline;
+        }
+        .action-none {
+            color: rgba(13,17,23,.2);
+            font-size: 13px;
+        }
+
+        /* PAGINATION */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(13,17,23,.55);
+        }
+        .pagination a {
+            color: rgba(13,17,23,.55);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color .15s;
+        }
+        .pagination a:hover {
+            color: #ff6b6b;
+        }
+        .pagination .page-info {
+            font-weight: 600;
+            color: #0d1117;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #0d1117;
+            padding: 48px;
+            margin-top: auto;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,.5);
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: rgba(255,255,255,.8);
+        }
+        .footer-copyright {
+            font-size: 12px;
+            color: rgba(255,255,255,.3);
+            width: 100%;
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <a href="#" class="nav-logo">Page<span>Turn</span></a>
+    <div class="nav-right">
+        <span class="admin-badge">Admin</span>
+        <div class="nav-avatar">FD</div>
+    </div>
+</nav>
+
+<!-- LAYOUT: SIDEBAR + MAIN -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <ul class="sidebar-links">
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Books
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Users
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Fines
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-back">
+            <a href="#">Back to Library &rarr;</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+            <h1>Fines</h1>
+            <p>Manage all fines across users</p>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="stats-row">
+            <div class="stat-card outstanding">
+                <div class="stat-label">Outstanding</div>
+                <div class="stat-amount">$342.50</div>
+                <div class="stat-sub">24 pending fines</div>
+            </div>
+            <div class="stat-card collected">
+                <div class="stat-label">Total Collected</div>
+                <div class="stat-amount">$1,245.00</div>
+                <div class="stat-sub">89 paid fines</div>
+            </div>
+            <div class="stat-card waived">
+                <div class="stat-label">Total Waived</div>
+                <div class="stat-amount">$187.50</div>
+                <div class="stat-sub">12 waived fines</div>
+            </div>
+        </div>
+
+        <!-- FILTER TABS -->
+        <div class="filter-tabs">
+            <button class="filter-tab active">All</button>
+            <button class="filter-tab">Pending</button>
+            <button class="filter-tab">Paid</button>
+            <button class="filter-tab">Waived</button>
+        </div>
+
+        <!-- FINES TABLE -->
+        <div class="table-container">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Book</th>
+                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1: Sarah Johnson — pending -->
+                        <tr class="row-pending">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">SJ</div>
+                                    <span class="user-name">Sarah Johnson</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">The Hobbit</span>
+                                    <span class="book-author">J.R.R. Tolkien</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-pending">$3.50</span></td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="date-cell">Feb 28, 2026</td>
+                            <td><a class="action-waive" href="#">Waive</a></td>
+                        </tr>
+
+                        <!-- Row 2: Mike Chen — pending -->
+                        <tr class="row-pending">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">MC</div>
+                                    <span class="user-name">Mike Chen</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">Brave New World</span>
+                                    <span class="book-author">Aldous Huxley</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-pending">$6.00</span></td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="date-cell">Feb 15, 2026</td>
+                            <td><a class="action-waive" href="#">Waive</a></td>
+                        </tr>
+
+                        <!-- Row 3: Mike Chen — pending -->
+                        <tr class="row-pending">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">MC</div>
+                                    <span class="user-name">Mike Chen</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">The Hobbit</span>
+                                    <span class="book-author">J.R.R. Tolkien</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-pending">$3.50</span></td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="date-cell">Feb 10, 2026</td>
+                            <td><a class="action-waive" href="#">Waive</a></td>
+                        </tr>
+
+                        <!-- Row 4: Tom Brown — pending, lost -->
+                        <tr class="row-pending">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">TB</div>
+                                    <span class="user-name">Tom Brown</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">Dune</span>
+                                    <span class="book-author">Frank Herbert</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-lost">lost_item</span></td>
+                            <td><span class="amount amount-pending">$30.00</span></td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="date-cell">Jan 25, 2026</td>
+                            <td><a class="action-waive" href="#">Waive</a></td>
+                        </tr>
+
+                        <!-- Row 5: Alice Williams — paid -->
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">AW</div>
+                                    <span class="user-name">Alice Williams</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">1984</span>
+                                    <span class="book-author">George Orwell</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-paid">$1.25</span></td>
+                            <td><span class="status-pill status-paid">Paid</span></td>
+                            <td class="date-cell">Jan 20, 2026</td>
+                            <td><span class="action-none">&mdash;</span></td>
+                        </tr>
+
+                        <!-- Row 6: Emily Park — paid -->
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">EP</div>
+                                    <span class="user-name">Emily Park</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">Sapiens</span>
+                                    <span class="book-author">Yuval Noah Harari</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-paid">$0.75</span></td>
+                            <td><span class="status-pill status-paid">Paid</span></td>
+                            <td class="date-cell">Jan 15, 2026</td>
+                            <td><span class="action-none">&mdash;</span></td>
+                        </tr>
+
+                        <!-- Row 7: Jennifer Lee — waived -->
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">JL</div>
+                                    <span class="user-name">Jennifer Lee</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">The Great Gatsby</span>
+                                    <span class="book-author">F. Scott Fitzgerald</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-late">late_return</span></td>
+                            <td><span class="amount amount-waived">$5.00</span></td>
+                            <td><span class="status-pill status-waived">Waived</span></td>
+                            <td class="date-cell">Jan 10, 2026</td>
+                            <td><span class="action-none">&mdash;</span></td>
+                        </tr>
+
+                        <!-- Row 8: Robert Kim — pending, damaged -->
+                        <tr class="row-pending">
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar">RK</div>
+                                    <span class="user-name">Robert Kim</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <span class="book-title">Gone Girl</span>
+                                    <span class="book-author">Gillian Flynn</span>
+                                </div>
+                            </td>
+                            <td><span class="reason-pill reason-damaged">damaged_item</span></td>
+                            <td><span class="amount amount-pending">$25.00</span></td>
+                            <td><span class="status-pill status-pending">Pending</span></td>
+                            <td class="date-cell">Jan 5, 2026</td>
+                            <td><a class="action-waive" href="#">Waive</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <a href="#">&larr; Previous</a>
+            <span class="page-info">Page 1 of 5</span>
+            <a href="#">Next &rarr;</a>
+        </div>
+
+    </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <a href="#" class="nav-logo" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Browse</a>
+            <a href="#">My Loans</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <p class="footer-copyright">&copy; 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn Admin — Fine Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #fff;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #1f2328;
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── PRIMARY NAV ── */
+        .nav {
+            background: #0d1117;
+            padding: 0 32px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo span {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .admin-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: rgba(255,107,107,.15);
+            color: #ff6b6b;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .nav-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* ── SECONDARY NAV (horizontal tabs replacing sidebar) ── */
+        .subnav {
+            background: #fff;
+            border-bottom: 1px solid #d1d9e0;
+            padding: 0 32px;
+            display: flex;
+            align-items: stretch;
+            height: 42px;
+        }
+        .subnav-tabs {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: stretch;
+        }
+        .subnav-tabs li {
+            display: flex;
+            align-items: stretch;
+        }
+        .subnav-tabs a {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #656d76;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color .15s;
+        }
+        .subnav-tabs a:hover {
+            color: #1f2328;
+        }
+        .subnav-tabs a.active {
+            color: #1f2328;
+            font-weight: 600;
+            border-bottom-color: #ff6b6b;
+        }
+        .subnav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        .subnav-right a {
+            font-size: 12px;
+            font-weight: 500;
+            color: #656d76;
+            text-decoration: none;
+        }
+        .subnav-right a:hover {
+            color: #ff6b6b;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 28px 32px 48px;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: -0.3px;
+            color: #1f2328;
+        }
+        .stat-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+            white-space: nowrap;
+        }
+        .stat-badge-coral {
+            background: #fff0f0;
+            color: #cf222e;
+        }
+        .stat-badge-green {
+            background: #dafbe1;
+            color: #1a7f37;
+        }
+        .stat-badge-gray {
+            background: #eef1f5;
+            color: #656d76;
+        }
+
+        /* ── TOOLBAR: filters + search + actions ── */
+        .toolbar {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d1d9e0;
+            padding-bottom: 0;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: stretch;
+        }
+        .filter-tabs li {
+            display: flex;
+            align-items: stretch;
+        }
+        .filter-tab {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #656d76;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            cursor: pointer;
+            transition: color .12s;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: inherit;
+        }
+        .filter-tab:hover {
+            color: #1f2328;
+        }
+        .filter-tab.active {
+            color: #1f2328;
+            font-weight: 600;
+            border-bottom-color: #ff6b6b;
+        }
+        .filter-tab .count {
+            margin-left: 6px;
+            background: rgba(0,0,0,.08);
+            padding: 0 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            min-width: 18px;
+            text-align: center;
+        }
+        .filter-tab.active .count {
+            background: rgba(255,107,107,.12);
+            color: #cf222e;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+        }
+        .search-input {
+            height: 30px;
+            padding: 0 10px 0 30px;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+            color: #1f2328;
+            width: 200px;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23656d76' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 9px center no-repeat;
+            transition: border-color .15s;
+        }
+        .search-input::placeholder { color: #8b949e; }
+        .search-input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255,107,107,.12);
+        }
+        .btn-icon {
+            height: 30px;
+            width: 30px;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #656d76;
+            transition: border-color .12s, color .12s;
+        }
+        .btn-icon:hover {
+            border-color: #afb8c1;
+            color: #1f2328;
+        }
+        .btn-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ── BULK ACTION BAR ── */
+        .bulk-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #d1d9e0;
+        }
+        .btn-waive {
+            height: 28px;
+            padding: 0 12px;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            background: #fff;
+            cursor: not-allowed;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: inherit;
+            color: #8b949e;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all .12s;
+        }
+        .btn-waive.enabled {
+            cursor: pointer;
+            color: #cf222e;
+            border-color: #cf222e;
+            background: #fff5f5;
+        }
+        .btn-waive.enabled:hover {
+            background: #cf222e;
+            color: #fff;
+        }
+        .bulk-hint {
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        /* ── TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #656d76;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: #f6f8fa;
+            border-bottom: 1px solid #d1d9e0;
+            white-space: nowrap;
+        }
+        thead th:first-child {
+            padding-left: 12px;
+            width: 32px;
+        }
+        thead th.align-right {
+            text-align: right;
+        }
+        thead th:last-child {
+            padding-right: 12px;
+        }
+
+        tbody td {
+            padding: 10px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #eaecef;
+            vertical-align: middle;
+        }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        tbody tr:hover td {
+            background: #f6f8fa;
+        }
+        tbody td:first-child {
+            padding-left: 12px;
+            width: 32px;
+        }
+        tbody td:last-child {
+            padding-right: 12px;
+        }
+
+        /* Checkbox */
+        .cb {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            accent-color: #ff6b6b;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        /* User column */
+        .user-link {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .user-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Book column */
+        .book-title {
+            font-weight: 500;
+            color: #1f2328;
+        }
+        .book-author {
+            color: #656d76;
+            font-size: 12px;
+        }
+
+        /* Type / reason */
+        .type-label {
+            font-size: 12px;
+            color: #656d76;
+        }
+
+        /* Amount */
+        .amount {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            text-align: right;
+            font-size: 13px;
+        }
+        td.align-right {
+            text-align: right;
+        }
+
+        /* Status: dot + text */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-pending .status-dot { background: #ff6b6b; }
+        .status-pending { color: #cf222e; }
+        .status-paid .status-dot { background: #1a7f37; }
+        .status-paid { color: #1a7f37; }
+        .status-waived .status-dot { background: #8b949e; }
+        .status-waived { color: #8b949e; }
+
+        /* Date */
+        .date-cell {
+            white-space: nowrap;
+            color: #656d76;
+            font-size: 12px;
+        }
+
+        /* Action */
+        .action-waive {
+            font-size: 12px;
+            font-weight: 500;
+            color: #ff6b6b;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            padding: 0;
+        }
+        .action-waive:hover {
+            text-decoration: underline;
+        }
+        .action-none {
+            color: #d1d9e0;
+            font-size: 12px;
+        }
+
+        /* ── PAGINATION ── */
+        .table-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-top: 1px solid #eaecef;
+        }
+        .showing-text {
+            font-size: 12px;
+            color: #656d76;
+        }
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .pagination a, .pagination span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 6px;
+            color: #1f2328;
+            transition: background .12s;
+        }
+        .pagination a:hover {
+            background: #f6f8fa;
+        }
+        .pagination a.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .pagination .ellipsis {
+            color: #8b949e;
+            cursor: default;
+        }
+        .pagination .nav-arrow {
+            color: #656d76;
+            font-size: 14px;
+        }
+        .pagination .nav-arrow:hover {
+            color: #1f2328;
+            background: #f6f8fa;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: #0d1117;
+            padding: 36px 32px;
+            margin-top: auto;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-brand {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .footer-brand span {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,.45);
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: rgba(255,255,255,.75);
+        }
+        .footer-copyright {
+            font-size: 11px;
+            color: rgba(255,255,255,.25);
+            width: 100%;
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+    </style>
+</head>
+<body>
+
+<!-- PRIMARY NAV -->
+<nav class="nav">
+    <a href="#" class="nav-logo">Page<span>Turn</span></a>
+    <div class="nav-right">
+        <span class="admin-badge">ADMIN</span>
+        <div class="nav-avatar">FD</div>
+    </div>
+</nav>
+
+<!-- SECONDARY NAV (replaces sidebar) -->
+<div class="subnav">
+    <ul class="subnav-tabs">
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Books</a></li>
+        <li><a href="#">Users</a></li>
+        <li><a href="#" class="active">Fines</a></li>
+    </ul>
+    <div class="subnav-right">
+        <a href="#">Back to Library &rarr;</a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Fine Management</h1>
+        <div class="stat-badges">
+            <span class="stat-badge stat-badge-coral">24 Pending</span>
+            <span class="stat-badge stat-badge-coral">$342.50 Outstanding</span>
+            <span class="stat-badge stat-badge-green">89 Paid</span>
+            <span class="stat-badge stat-badge-gray">12 Waived</span>
+        </div>
+    </div>
+
+    <!-- TOOLBAR: filter tabs + search + export -->
+    <div class="toolbar">
+        <ul class="filter-tabs">
+            <li><button class="filter-tab active">All <span class="count">125</span></button></li>
+            <li><button class="filter-tab">Pending <span class="count">24</span></button></li>
+            <li><button class="filter-tab">Paid <span class="count">89</span></button></li>
+            <li><button class="filter-tab">Waived <span class="count">12</span></button></li>
+        </ul>
+        <div class="toolbar-right">
+            <input type="text" class="search-input" placeholder="Search fines...">
+            <button class="btn-icon" title="Export">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- BULK ACTION BAR -->
+    <div class="bulk-bar">
+        <button class="btn-waive" id="waiveBtn">Waive Selected (0)</button>
+        <span class="bulk-hint">Select pending fines to waive in bulk</span>
+    </div>
+
+    <!-- TABLE (no card wrapper) -->
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" class="cb" id="selectAll"></th>
+                <th>User</th>
+                <th>Book</th>
+                <th>Type</th>
+                <th class="align-right">Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Row 1: Sarah Johnson - pending -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb"></td>
+                <td><a href="#" class="user-link">Sarah Johnson</a></td>
+                <td>
+                    <div class="book-title">The Hobbit</div>
+                    <div class="book-author">J.R.R. Tolkien</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$3.50</span></td>
+                <td><span class="status status-pending"><span class="status-dot"></span>Pending</span></td>
+                <td class="date-cell">Feb 28, 2026</td>
+                <td><button class="action-waive">Waive</button></td>
+            </tr>
+
+            <!-- Row 2: Mike Chen - pending -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb"></td>
+                <td><a href="#" class="user-link">Mike Chen</a></td>
+                <td>
+                    <div class="book-title">Brave New World</div>
+                    <div class="book-author">Aldous Huxley</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$6.00</span></td>
+                <td><span class="status status-pending"><span class="status-dot"></span>Pending</span></td>
+                <td class="date-cell">Feb 15, 2026</td>
+                <td><button class="action-waive">Waive</button></td>
+            </tr>
+
+            <!-- Row 3: Mike Chen - pending -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb"></td>
+                <td><a href="#" class="user-link">Mike Chen</a></td>
+                <td>
+                    <div class="book-title">The Hobbit</div>
+                    <div class="book-author">J.R.R. Tolkien</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$3.50</span></td>
+                <td><span class="status status-pending"><span class="status-dot"></span>Pending</span></td>
+                <td class="date-cell">Feb 10, 2026</td>
+                <td><button class="action-waive">Waive</button></td>
+            </tr>
+
+            <!-- Row 4: Tom Brown - pending, lost -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb"></td>
+                <td><a href="#" class="user-link">Tom Brown</a></td>
+                <td>
+                    <div class="book-title">Dune</div>
+                    <div class="book-author">Frank Herbert</div>
+                </td>
+                <td><span class="type-label">Lost item</span></td>
+                <td class="align-right"><span class="amount">$30.00</span></td>
+                <td><span class="status status-pending"><span class="status-dot"></span>Pending</span></td>
+                <td class="date-cell">Jan 25, 2026</td>
+                <td><button class="action-waive">Waive</button></td>
+            </tr>
+
+            <!-- Row 5: Alice Williams - paid -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb" disabled></td>
+                <td><a href="#" class="user-link">Alice Williams</a></td>
+                <td>
+                    <div class="book-title">1984</div>
+                    <div class="book-author">George Orwell</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$1.25</span></td>
+                <td><span class="status status-paid"><span class="status-dot"></span>Paid</span></td>
+                <td class="date-cell">Jan 20, 2026</td>
+                <td><span class="action-none">&mdash;</span></td>
+            </tr>
+
+            <!-- Row 6: Emily Park - paid -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb" disabled></td>
+                <td><a href="#" class="user-link">Emily Park</a></td>
+                <td>
+                    <div class="book-title">Sapiens</div>
+                    <div class="book-author">Yuval Noah Harari</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$0.75</span></td>
+                <td><span class="status status-paid"><span class="status-dot"></span>Paid</span></td>
+                <td class="date-cell">Jan 15, 2026</td>
+                <td><span class="action-none">&mdash;</span></td>
+            </tr>
+
+            <!-- Row 7: Jennifer Lee - waived -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb" disabled></td>
+                <td><a href="#" class="user-link">Jennifer Lee</a></td>
+                <td>
+                    <div class="book-title">The Great Gatsby</div>
+                    <div class="book-author">F. Scott Fitzgerald</div>
+                </td>
+                <td><span class="type-label">Late return</span></td>
+                <td class="align-right"><span class="amount">$5.00</span></td>
+                <td><span class="status status-waived"><span class="status-dot"></span>Waived</span></td>
+                <td class="date-cell">Jan 10, 2026</td>
+                <td><span class="action-none">&mdash;</span></td>
+            </tr>
+
+            <!-- Row 8: Robert Kim - pending, damaged -->
+            <tr>
+                <td><input type="checkbox" class="cb row-cb"></td>
+                <td><a href="#" class="user-link">Robert Kim</a></td>
+                <td>
+                    <div class="book-title">Gone Girl</div>
+                    <div class="book-author">Gillian Flynn</div>
+                </td>
+                <td><span class="type-label">Damaged item</span></td>
+                <td class="align-right"><span class="amount">$25.00</span></td>
+                <td><span class="status status-pending"><span class="status-dot"></span>Pending</span></td>
+                <td class="date-cell">Jan 5, 2026</td>
+                <td><button class="action-waive">Waive</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- TABLE FOOTER: showing + pagination -->
+    <div class="table-footer">
+        <span class="showing-text">Showing 1&ndash;8 of 125</span>
+        <div class="pagination">
+            <a href="#" class="nav-arrow">&laquo;</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <span class="ellipsis">&hellip;</span>
+            <a href="#">16</a>
+            <a href="#" class="nav-arrow">&raquo;</a>
+        </div>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <a href="#" class="footer-brand">Page<span>Turn</span></a>
+        <div class="footer-links">
+            <a href="#">Browse</a>
+            <a href="#">My Loans</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+        <p class="footer-copyright">&copy; 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Simple checkbox logic for the "Waive Selected" bulk action
+    const selectAll = document.getElementById('selectAll');
+    const rowCbs = document.querySelectorAll('.row-cb:not([disabled])');
+    const waiveBtn = document.getElementById('waiveBtn');
+
+    function updateWaiveBtn() {
+        const checked = document.querySelectorAll('.row-cb:checked');
+        const count = checked.length;
+        waiveBtn.textContent = 'Waive Selected (' + count + ')';
+        if (count > 0) {
+            waiveBtn.classList.add('enabled');
+        } else {
+            waiveBtn.classList.remove('enabled');
+        }
+    }
+
+    selectAll.addEventListener('change', function() {
+        rowCbs.forEach(function(cb) {
+            cb.checked = selectAll.checked;
+        });
+        updateWaiveBtn();
+    });
+
+    rowCbs.forEach(function(cb) {
+        cb.addEventListener('change', function() {
+            updateWaiveBtn();
+            // Uncheck "select all" if any row is unchecked
+            if (!cb.checked) {
+                selectAll.checked = false;
+            }
+            // Check "select all" if all enabled rows are checked
+            const allChecked = Array.from(rowCbs).every(function(c) { return c.checked; });
+            if (allChecked) selectAll.checked = true;
+        });
+    });
+</script>
+
+</body>
+</html>

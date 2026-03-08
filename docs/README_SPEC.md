@@ -41,9 +41,26 @@ From the Valsoft challenge:
 - Keep it to ~10 lines of shell commands
 
 ### Features at a Glance
-- Bulleted list, grouped by: Core Library, Member Experience, Admin Tools, AI Integration
-- Each bullet is one line max
-- Highlight the MCP tools count (22 tools across user + admin)
+Use this two-column table in the README. It shows the full scope at a glance.
+
+| Members | Admins |
+|---|---|
+| Full-text book search (weighted: title > author > description > genre) | Dashboard with live stats (books, copies, loans, overdue, users, fines) |
+| Filter by genre, item type, availability | Book CRUD with full metadata (title, author, ISBN, description, cover, etc.) |
+| Sort by relevance, title, rating, publication year | Copy management (add copies, update condition, mark damaged/lost) |
+| Book detail with metadata, availability, and community reviews | Staff pick management (toggle + librarian note) |
+| One-click checkout (auto-reserves when unavailable) | User management (search, view full profile, edit settings) |
+| Loan management with due dates and renewal tracking | Role promotion/demotion (synced to Clerk) |
+| Loan renewal (up to 2x, blocked when someone is waiting) | View all active and overdue loans across users |
+| Loan history with "Borrow Again" links | Process returns (triggers fine calculation + reservation queue) |
+| Reservation waitlist with queue position and 48h pickup window | Mark loans as lost ($30 fee or replacement cost) |
+| Fine tracking with daily accrual breakdown by item type | Fine management (view all, filter by status, waive individual fines) |
+| Book reviews and ratings (1-5 stars + optional text) | AI admin assistant via MCP (9 admin-only tools) |
+| Review nudge for recently returned books | Cron: overdue detection (daily) + reservation expiry (hourly) |
+| AI assistant via MCP (13 tools — search, checkout, renew, recommend) | |
+| SSO authentication (Google + email via Clerk) | |
+| "Currently Reading" section on homepage | |
+| Staff Picks and Top Rated browsing sections | |
 
 ### Why MCP, Not a Chatbot (include this reasoning)
 - **The core argument**: Non-power users use the UI. Power users already have their own AI agents (Claude Desktop, custom setups). They don't want to interact with a website chatbot — they want their existing agents to have access to the library system.

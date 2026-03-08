@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurn — Admin: Users</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #fafafa; font-family: 'DM Sans', sans-serif; color: #0d1117; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Nav */
+        .nav {
+            background: #0d1117;
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+        .nav-logo .turn {
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .admin-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(255,107,107,.15);
+            color: #ff6b6b;
+            letter-spacing: 0.3px;
+        }
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e5e5e5;
+            padding: 32px 0;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 72px;
+            height: calc(100vh - 72px);
+            flex-shrink: 0;
+        }
+        .sidebar-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 0 12px;
+            flex: 1;
+        }
+        .sidebar-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(13,17,23,.55);
+            text-decoration: none;
+            transition: all .15s;
+        }
+        .sidebar-links a:hover {
+            background: #fafafa;
+            color: #0d1117;
+        }
+        .sidebar-links a.active {
+            background: rgba(255,107,107,.06);
+            color: #ff6b6b;
+            font-weight: 700;
+        }
+        .sidebar-links a svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-back {
+            padding: 0 12px;
+            margin-top: auto;
+        }
+        .sidebar-back a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(13,17,23,.45);
+            text-decoration: none;
+            transition: all .15s;
+        }
+        .sidebar-back a:hover {
+            background: #fafafa;
+            color: #0d1117;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 40px 48px 60px;
+            min-width: 0;
+        }
+
+        /* Page header */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .page-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: -0.5px;
+        }
+        .page-header p {
+            color: rgba(13,17,23,.5);
+            font-size: 15px;
+            margin-top: 6px;
+        }
+        .search-input {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 50px;
+            padding: 10px 20px;
+            gap: 10px;
+            min-width: 300px;
+            transition: border-color .15s;
+        }
+        .search-input:focus-within {
+            border-color: #ff6b6b;
+        }
+        .search-input svg {
+            flex-shrink: 0;
+            color: rgba(13,17,23,.35);
+        }
+        .search-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            color: #0d1117;
+            background: transparent;
+        }
+        .search-input input::placeholder {
+            color: rgba(13,17,23,.35);
+        }
+
+        /* Table */
+        .table-card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead th {
+            text-align: left;
+            padding: 14px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(13,17,23,.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e5e5e5;
+            background: #fafafa;
+        }
+        thead th:first-child { padding-left: 24px; }
+        thead th:last-child { padding-right: 24px; }
+        tbody tr {
+            cursor: pointer;
+            transition: background .12s;
+        }
+        tbody tr:hover {
+            background: #f0f4ff !important;
+        }
+        tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+        tbody td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(229,229,229,.5);
+            vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody td:first-child { padding-left: 24px; }
+        tbody td:last-child { padding-right: 24px; }
+
+        /* User cell */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4cc9f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .user-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+        .user-email {
+            font-size: 13px;
+            color: rgba(13,17,23,.45);
+            margin-top: 2px;
+        }
+
+        /* Role badges */
+        .role-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .role-admin {
+            background: linear-gradient(135deg, rgba(255,107,107,.12), rgba(76,201,240,.12));
+            color: #ff6b6b;
+        }
+        .role-user {
+            background: rgba(13,17,23,.06);
+            color: rgba(13,17,23,.5);
+        }
+
+        /* Fines */
+        .fine-amount {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: right;
+        }
+        .fine-coral {
+            color: #ff6b6b;
+        }
+        .fine-coral-bold {
+            color: #ff6b6b;
+            font-weight: 700;
+        }
+        .fine-zero {
+            color: rgba(13,17,23,.3);
+        }
+
+        /* Date */
+        .date-cell {
+            white-space: nowrap;
+            color: rgba(13,17,23,.6);
+            font-size: 13px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .pagination a {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(13,17,23,.5);
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .pagination a:hover {
+            color: #ff6b6b;
+        }
+        .pagination a.disabled {
+            color: rgba(13,17,23,.2);
+            pointer-events: none;
+        }
+        .pagination span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0d1117;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+    <a href="#" class="nav-logo">Page<span class="turn">Turn</span></a>
+    <div class="nav-right">
+        <span class="admin-badge">Admin</span>
+        <div class="nav-avatar">FD</div>
+    </div>
+</nav>
+
+<!-- Layout -->
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="sidebar-links">
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Books
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Users
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Fines
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-back">
+            <a href="#">
+                Back to Library
+                <span style="margin-left:2px;">&rarr;</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <div>
+                <h1>Users</h1>
+                <p>50 registered members</p>
+            </div>
+            <div class="search-input">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search by name or email...">
+            </div>
+        </div>
+
+        <!-- Users table -->
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:32%;">User</th>
+                        <th>Role</th>
+                        <th>Active Loans</th>
+                        <th style="text-align:right;">Outstanding Fines</th>
+                        <th style="text-align:right;">Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row 1: Franco Dominguez -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">FD</div>
+                                <div>
+                                    <div class="user-name">Franco Dominguez</div>
+                                    <div class="user-email">franco@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-admin">admin</span></td>
+                        <td>2</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
+                        <td class="date-cell" style="text-align:right;">Mar 1, 2024</td>
+                    </tr>
+
+                    <!-- Row 2: Sarah Johnson -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">SJ</div>
+                                <div>
+                                    <div class="user-name">Sarah Johnson</div>
+                                    <div class="user-email">sarah.j@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>3</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-coral">$2.50</span></td>
+                        <td class="date-cell" style="text-align:right;">Jun 15, 2024</td>
+                    </tr>
+
+                    <!-- Row 3: Mike Chen -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">MC</div>
+                                <div>
+                                    <div class="user-name">Mike Chen</div>
+                                    <div class="user-email">mike.chen@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>5</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-coral">$12.50</span></td>
+                        <td class="date-cell" style="text-align:right;">Aug 3, 2024</td>
+                    </tr>
+
+                    <!-- Row 4: Emily Park -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">EP</div>
+                                <div>
+                                    <div class="user-name">Emily Park</div>
+                                    <div class="user-email">emily.p@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-admin">admin</span></td>
+                        <td>0</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
+                        <td class="date-cell" style="text-align:right;">Sep 20, 2024</td>
+                    </tr>
+
+                    <!-- Row 5: Alice Williams -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">AW</div>
+                                <div>
+                                    <div class="user-name">Alice Williams</div>
+                                    <div class="user-email">alice.w@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>4</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
+                        <td class="date-cell" style="text-align:right;">Nov 5, 2024</td>
+                    </tr>
+
+                    <!-- Row 6: Tom Brown -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">TB</div>
+                                <div>
+                                    <div class="user-name">Tom Brown</div>
+                                    <div class="user-email">tom.b@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>1</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-coral">$7.25</span></td>
+                        <td class="date-cell" style="text-align:right;">Dec 12, 2024</td>
+                    </tr>
+
+                    <!-- Row 7: Jennifer Lee -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">JL</div>
+                                <div>
+                                    <div class="user-name">Jennifer Lee</div>
+                                    <div class="user-email">jennifer.l@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>3</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-zero">&mdash;</span></td>
+                        <td class="date-cell" style="text-align:right;">Jan 8, 2025</td>
+                    </tr>
+
+                    <!-- Row 8: Robert Kim -->
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">RK</div>
+                                <div>
+                                    <div class="user-name">Robert Kim</div>
+                                    <div class="user-email">robert.k@example.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="role-badge role-user">user</span></td>
+                        <td>0</td>
+                        <td style="text-align:right;"><span class="fine-amount fine-coral-bold">$25.00</span></td>
+                        <td class="date-cell" style="text-align:right;">Feb 14, 2025</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <a href="#" class="disabled">&larr; Previous</a>
+            <span>Page 1 of 3</span>
+            <a href="#">Next &rarr;</a>
+        </div>
+
+    </main>
+</div>
+
+<!-- Footer -->
+<footer style="background:#0d1117; padding:48px; margin-top:0;">
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px;">
+        <div>
+            <a href="#" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#fff; text-decoration:none; letter-spacing:-0.5px;">Page<span style="background:linear-gradient(135deg,#ff6b6b,#4cc9f0); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Turn</span></a>
+            <p style="font-size:13px; color:rgba(255,255,255,.4); margin-top:8px;">Your modern library catalogue</p>
+        </div>
+        <div style="display:flex; gap:32px;">
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Browse</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">My Loans</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Privacy</a>
+            <a href="#" style="color:rgba(255,255,255,.5); font-size:14px; text-decoration:none;">Terms</a>
+        </div>
+        <p style="font-size:12px; color:rgba(255,255,255,.3); width:100%; text-align:center; margin-top:16px; padding-top:24px; border-top:1px solid rgba(255,255,255,.06);">&copy; 2026 PageTurn Library. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
