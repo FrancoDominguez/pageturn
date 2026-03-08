@@ -607,6 +607,8 @@ Admin pages use a **distinct, denser design** from user-facing pages. The philos
 
 **Mockups**: `mockups/admin-dashboard.html`, `admin-books.html`, `admin-users.html`, `admin-user-detail.html`, `admin-fines.html`
 
+**Important**: The mockups represent the approved **layout and visual style** (density, sidebar, KPI bars, table patterns, hover actions). The implementation must follow BOTH the mockups for look-and-feel AND the full spec below for all behaviors, data fetching, edge cases, modals, and business logic. The mockups are style references, not feature-complete specs.
+
 **Admin Design Tokens** (override user-facing tokens):
 - Body font size: 13px (not 14px)
 - Background: `#f9fafb` (slightly cooler than user `#fafafa`)

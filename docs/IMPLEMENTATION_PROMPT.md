@@ -30,8 +30,8 @@ You are implementing PageTurn — a full-stack library catalogue and management 
 
 ### Before starting
 1. Verify the user has completed `MANUAL_SETUP.md` — check for `.env` with Clerk keys, Neon API key, Vercel token, GCP billing account
-2. The UI design is finalized — use the design tokens from `docs/FRONTEND.md` (Bold Modern theme)
-3. Mockups exist in `mockups/` for user-facing pages. Admin pages have no mockups — build from the FRONTEND.md text spec.
+2. The UI design is finalized — use the design tokens from `docs/FRONTEND.md` (Bold Modern theme for users, Notion/Stripe dense style for admin)
+3. Mockups exist in `mockups/` for ALL pages (user-facing AND admin). Mockups show the approved layout and visual style. The FRONTEND.md spec has the full behaviors, data fetching, edge cases, modals, and business logic. Use BOTH — mockups for look-and-feel, FRONTEND.md for everything else.
 
 ### Known fixes from plan review (apply during implementation)
 - Add `SELECT ... FOR UPDATE` to checkout and reservation copy selection queries (prevent race conditions)
