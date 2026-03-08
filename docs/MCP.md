@@ -176,8 +176,6 @@ Check out a book or join the waitlist if unavailable.
 
 **API Call**: `POST /api/loans` body: `{"book_id": book_id}`
 
-If 400 error (no copies available), falls back to: `POST /api/reservations` body: `{"book_id": book_id}`
-
 ---
 
 ### `renew_loan`

@@ -165,6 +165,7 @@ NEON_API_KEY=xxxxx
 FRONTEND_URL=http://localhost:5173
 API_URL=http://localhost:8000
 MCP_URL=http://localhost:8080
+CRON_SECRET=xxxxx
 ```
 
 ### Frontend Environment (`.env.local`)
@@ -181,6 +182,7 @@ DATABASE_URL=postgresql://...
 CLERK_SECRET_KEY=sk_test_xxxxx
 CLERK_WEBHOOK_SECRET=whsec_xxxxx
 FRONTEND_URL=http://localhost:5173
+CRON_SECRET=<random-secret-for-vercel-cron>
 ```
 
 ### MCP Server Environment

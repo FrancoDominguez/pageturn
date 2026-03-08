@@ -727,6 +727,8 @@ Create a new book.
   "publication_year": 2026,
   "publisher": "Publisher Name",
   "language": "en",
+  "is_staff_pick": false,
+  "staff_pick_note": null,
   "copies": 2,
   "copy_condition": "new"
 }

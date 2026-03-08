@@ -298,6 +298,7 @@ See `API.md` for exact response shapes. Every JSON response in that doc maps to 
 - `PUT /api/admin/books/{book_id}` — update (admin)
 - `DELETE /api/admin/books/{book_id}` — delete (admin)
 - `POST /api/admin/books/{book_id}/copies` — add copies (admin)
+- `PUT /api/admin/book-copies/{copy_id}` — update copy status/condition (admin)
 
 ### Step 2.3: Loans
 
@@ -332,13 +333,20 @@ Key functions:
   4. Update copy status to 'available'
   5. Trigger reservation queue (call `reservation_service.process_return_queue`)
 
+- `mark_lost(db, admin, loan_id)`:
+  1. Set loan: returned_at=now(), status='returned'
+  2. Create fine with reason='lost_item', amount=replacement_cost or $30 default
+  3. Set copy status='lost'
+
 **Router: `api/app/routers/loans.py`**
 - `POST /api/loans` — checkout
 - `GET /api/loans` — my active loans
+- `GET /api/loans/{loan_id}` — single loan detail
 - `GET /api/loans/history` — my history
 - `POST /api/loans/{loan_id}/renew` — renew
 - `GET /api/admin/loans` — all loans (admin)
 - `POST /api/admin/loans/{loan_id}/return` — process return (admin)
+- `POST /api/admin/loans/{loan_id}/lost` — mark as lost (admin)
 
 ### Step 2.4: Reservations
 
@@ -537,6 +545,15 @@ For each loan where `returned_at > due_date`, calculate and create a fine.
 
 Generate 200 reviews. Only for user+book combos where a returned loan exists.
 
+### Step 3.5.5: Reservation Seeder
+
+**File: `api/app/seed/seed_reservations.py`**
+
+Generate 30 reservations:
+- 15 pending: linked to books where all copies are checked_out, queue_position assigned
+- 10 ready: linked to a reserved copy, expires_at in the future
+- 5 fulfilled: linked to a loan that was created from the reservation
+
 ### Step 3.6: Seed Orchestrator
 
 **File: `api/app/seed/run_seed.py`**
@@ -641,7 +658,7 @@ Build in this order:
 4. `routes/history.tsx` — HistoryPage
 5. `routes/fines.tsx` — FinesPage
 6. `routes/reviews.tsx` — MyReviewsPage (actually use path `/reviews`)
-7. `routes/settings.tsx` — SettingsPage (API keys)
+7. `routes/ai-assistant.tsx` — AIAssistantPage (API keys)
 8. `routes/admin/index.tsx` — AdminDashboard
 9. `routes/admin/books.tsx` — AdminBooksPage
 10. `routes/admin/users.tsx` — AdminUsersPage
@@ -702,6 +719,7 @@ async def verify_api_key(key: str, required_scope: str = None) -> dict:
 **File: `mcp/tools/reservations.py`** — `get_my_reservations`, `cancel_reservation` tools
 **File: `mcp/tools/reviews.py`** — `get_my_reviews`, `get_book_reviews`, `create_review` tools
 **File: `mcp/tools/fines.py`** — `get_my_fines` tool
+**File: `mcp/tools/reading_profile.py`** — `get_reading_profile` tool
 
 Each tool is a thin wrapper that calls the REST API (or directly queries the DB).
 

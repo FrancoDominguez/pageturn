@@ -926,13 +926,11 @@ interface BookSummary {
   cover_image_url?: string;
 }
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
-}
+// NOTE: There is no generic PaginatedResponse<T>. Each API endpoint uses
+// domain-specific response keys (e.g., "books", "loans", "fines", "reviews").
+// Define per-endpoint response types instead (e.g., BooksResponse, LoansResponse)
+// that match the actual JSON shape returned by each endpoint. See API.md for
+// the exact response structures.
 ```
 
 ---
