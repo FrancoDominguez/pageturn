@@ -48,7 +48,7 @@ npm run dev
 | SSO authentication (Google + email via Clerk) | |
 | Staff Picks and Top Rated browsing sections | |
 
-## Why MCP, Not a Chatbot
+## The best UI is no UI
 
 Non-power users use the UI. Power users already have their own AI agents — Claude Desktop, custom setups, IDE integrations. They don't want to interact with a website chatbot. They want their existing agents to have access to the library system.
 
