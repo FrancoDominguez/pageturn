@@ -7,14 +7,17 @@ import QueryError from '../../components/QueryError';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+interface AdminFineUser {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+}
+
 interface AdminFine {
   id: string;
-  user_id: string;
-  user_name: string;
-  user_email: string;
+  user: AdminFineUser;
   book_title: string;
-  book_author: string;
-  loan_id: string;
   amount: number;
   reason: 'late_return' | 'lost_item' | 'damaged_item';
   status: 'pending' | 'paid' | 'waived';
@@ -24,14 +27,7 @@ interface AdminFine {
 interface AdminFinesResponse {
   fines: AdminFine[];
   total: number;
-  page: number;
-  pages: number;
-}
-
-interface AdminFinesStats {
-  outstanding: number;
-  collected: number;
-  waived: number;
+  total_outstanding_amount: number;
 }
 
 const filterTabs = ['All', 'Pending', 'Paid', 'Waived'] as const;
@@ -65,12 +61,7 @@ export default function AdminFinesPage() {
   const [activeTab, setActiveTab] = useState<string>('All');
 
   const status = filterMap[activeTab];
-
-  // Fetch stats
-  const { data: stats } = useQuery({
-    queryKey: ['admin', 'fines', 'stats'],
-    queryFn: () => apiFetch<AdminFinesStats>('/api/admin/fines/stats'),
-  });
+  const limit = 25;
 
   // Fetch fines
   const { data, isLoading, isError, refetch } = useQuery({
@@ -79,14 +70,14 @@ export default function AdminFinesPage() {
       apiFetch<AdminFinesResponse>('/api/admin/fines', {
         params: {
           page: String(page),
-          limit: '25',
+          limit: String(limit),
           status,
         },
       }),
   });
 
   const fines = data?.fines ?? [];
-  const totalPages = data?.pages ?? 1;
+  const totalPages = data ? Math.max(1, Math.ceil(data.total / limit)) : 1;
 
   // Waive mutation
   const waiveMutation = useMutation({
@@ -115,19 +106,13 @@ export default function AdminFinesPage() {
           <div className="pr-8">
             <div className="text-[11px] uppercase tracking-wider text-gray-500">Outstanding</div>
             <div className="text-2xl font-heading font-bold text-primary">
-              {stats ? `$${stats.outstanding.toFixed(2)}` : '--'}
+              {data ? `$${data.total_outstanding_amount.toFixed(2)}` : '--'}
             </div>
           </div>
           <div className="px-8">
-            <div className="text-[11px] uppercase tracking-wider text-gray-500">Collected</div>
+            <div className="text-[11px] uppercase tracking-wider text-gray-500">Total Fines</div>
             <div className="text-2xl font-heading font-bold">
-              {stats ? `$${stats.collected.toFixed(2)}` : '--'}
-            </div>
-          </div>
-          <div className="px-8">
-            <div className="text-[11px] uppercase tracking-wider text-gray-500">Waived</div>
-            <div className="text-2xl font-heading font-bold text-gray-400">
-              {stats ? `$${stats.waived.toFixed(2)}` : '--'}
+              {data?.total?.toLocaleString() ?? '--'}
             </div>
           </div>
         </div>
@@ -194,12 +179,13 @@ export default function AdminFinesPage() {
                   return (
                     <tr key={fine.id} className="border-b border-gray-100 h-[44px] hover:bg-gray-50 group">
                       <td className="px-4">
-                        <div className="font-medium text-gray-900">{fine.user_name}</div>
-                        <div className="text-gray-400">{fine.user_email}</div>
+                        <div className="font-medium text-gray-900">
+                          {[fine.user.first_name, fine.user.last_name].filter(Boolean).join(' ') || fine.user.email}
+                        </div>
+                        <div className="text-gray-400">{fine.user.email}</div>
                       </td>
                       <td className="px-4">
                         <div className="font-medium text-gray-900">{fine.book_title}</div>
-                        <div className="text-gray-400">{fine.book_author}</div>
                       </td>
                       <td className="px-4 text-gray-600">
                         {reasonLabels[fine.reason] ?? fine.reason}
