@@ -97,6 +97,28 @@ export default function AdminUserDetailPage() {
     onError: () => toast('Failed to update role', 'error'),
   });
 
+  // Return a loan
+  const returnMutation = useMutation({
+    mutationFn: (loanId: string) =>
+      apiFetch(`/api/admin/loans/${loanId}/return`, { method: 'POST' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users', id] });
+      toast('Book returned', 'success');
+    },
+    onError: () => toast('Failed to return book', 'error'),
+  });
+
+  // Mark lost
+  const lostMutation = useMutation({
+    mutationFn: (loanId: string) =>
+      apiFetch(`/api/admin/loans/${loanId}/lost`, { method: 'POST' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users', id] });
+      toast('Marked as lost', 'success');
+    },
+    onError: () => toast('Failed to mark as lost', 'error'),
+  });
+
   // Waive fine
   const waiveMutation = useMutation({
     mutationFn: (fineId: string) =>
@@ -261,17 +283,42 @@ export default function AdminUserDetailPage() {
                     <th className="text-left text-[11px] uppercase tracking-wider text-gray-500 py-3 px-4 font-medium">Book</th>
                     <th className="text-left text-[11px] uppercase tracking-wider text-gray-500 py-3 px-4 font-medium">Due / Returned</th>
                     <th className="text-left text-[11px] uppercase tracking-wider text-gray-500 py-3 px-4 font-medium">Status</th>
+                    <th className="text-right text-[11px] uppercase tracking-wider text-gray-500 py-3 px-4 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {active_loans.map((loan) => (
-                    <tr key={loan.id} className="border-b border-gray-100 h-[44px] hover:bg-gray-50">
+                    <tr key={loan.id} className="border-b border-gray-100 h-[44px] hover:bg-gray-50 group">
                       <td className="px-4 font-medium text-gray-900">{loan.book_title}</td>
                       <td className="px-4 text-gray-600">{new Date(loan.due_date).toLocaleDateString()}</td>
                       <td className="px-4">
                         <span className="inline-flex items-center gap-1.5 text-emerald-600">
                           <span className="w-[6px] h-[6px] rounded-full bg-emerald-500" />
                           Active
+                        </span>
+                      </td>
+                      <td className="px-4 text-right">
+                        <span className="inline-flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => returnMutation.mutate(loan.id)}
+                            disabled={returnMutation.isPending}
+                            className="text-primary text-[13px] font-medium hover:underline cursor-pointer"
+                          >
+                            Return
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Mark "${loan.book_title}" as lost? This will generate a fine.`)) {
+                                lostMutation.mutate(loan.id);
+                              }
+                            }}
+                            disabled={lostMutation.isPending}
+                            className="text-red-600 text-[13px] font-medium hover:underline cursor-pointer"
+                          >
+                            Mark Lost
+                          </button>
                         </span>
                       </td>
                     </tr>
@@ -288,6 +335,7 @@ export default function AdminUserDetailPage() {
                           Returned
                         </span>
                       </td>
+                      <td className="px-4" />
                     </tr>
                   ))}
                 </tbody>
