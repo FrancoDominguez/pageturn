@@ -90,7 +90,7 @@ Same auth as member but with `role='admin'` in database and Clerk metadata. Full
 - [ ] Supports: Google SSO, Email + password, Email magic link
 - [ ] After sign-in, user is synced to our database via Clerk webhook
 - [ ] Nav bar updates to show user avatar, name, and "My Account" dropdown
-- [ ] Dropdown contains: My Loans, Loan History, Fines & Dues, My Reviews, AI Assistant, Sign Out
+- [ ] Dropdown contains: My Loans, Loan History, Fines & Dues (shows outstanding balance badge if > $0, e.g., "Fines & Dues ($2.50)"), My Reviews, AI Assistant, Sign Out
 - [ ] Admin users see additional "Admin" link in dropdown
 - [ ] Session persists across page reloads (Clerk handles this)
 - [ ] Sign out clears session and redirects to homepage
@@ -243,9 +243,10 @@ Same auth as member but with `role='admin'` in database and Clerk metadata. Full
 **Description**: Transparent fine tracking and management.
 
 **User Fines Page** (`/fines`):
-- [ ] List of all fines with: book title, reason, amount, status (pending/paid/waived), date
-- [ ] Total outstanding balance prominently displayed
+- [ ] Prominent outstanding balance display at top (single number, not multiple stat cards — users only care about what they owe now, not lifetime totals)
+- [ ] If balance is $0: green "All clear — no outstanding fines" message
 - [ ] If balance >= $10.00: warning banner "Your account has a checkout hold. Please resolve outstanding fines."
+- [ ] List of all fines below with: book title, reason, amount, status (pending/paid/waived), date
 - [ ] Fine detail: breakdown showing daily rate, days overdue, total
 
 **Fine Calculation Logic**:
@@ -305,7 +306,7 @@ Same auth as member but with `role='admin'` in database and Clerk metadata. Full
 **Description**: Admins can view and manage all user accounts.
 
 **Admin Users Page** (`/admin/users`):
-- [ ] Searchable table: name, email, role, active loans, total fines, joined date
+- [ ] Searchable table: name, email, role, active loans, outstanding balance, joined date
 - [ ] Click user → detail view showing:
   - Profile info (name, email, role, max_loans setting)
   - Current loans with due dates
@@ -392,6 +393,7 @@ Same auth as member but with `role='admin'` in database and Clerk metadata. Full
 |------|--------|---------|-------------|
 | `create_book` | `title: str, author: str, isbn?: str, description?: str, genre?: str, genres?: list, item_type?: str, cover_image_url?: str, page_count?: int, pub_year?: int, publisher?: str, copies?: int` | `{success: bool, book_id?}` | Add book |
 | `update_book` | `book_id: str, [any book field]` | `{success: bool}` | Edit book |
+| `add_copies` | `book_id: str, count: int, condition?: str` | `{success: bool, copies_created: int, total_copies: int}` | Add copies to existing book |
 | `delete_book` | `book_id: str` | `{success: bool}` | Remove book |
 | `lookup_user` | `query: str` | `{users: [{id, name, email, role, active_loans, total_fines}]}` | Find user |
 | `get_user_details` | `user_id: str` | `{full user profile with loans, fines, reviews}` | User detail |

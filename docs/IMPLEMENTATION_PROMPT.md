@@ -29,7 +29,7 @@ You are implementing PageTurn — a full-stack library catalogue and management 
 ## Critical Implementation Notes
 
 ### Before starting
-1. Verify the user has completed `MANUAL_SETUP.md` — check for `.env` with Clerk keys, Neon API key, Vercel token, GCP billing account
+1. `MANUAL_SETUP.md` is COMPLETE. `.env` exists with Clerk keys + `DATABASE_URL` + `GCP_PROJECT_ID`. All CLIs authenticated via OAuth. GCP project is `valsoft-library-demo-488905` (reuse it, don't create new). Neon database `neondb` already exists (just run migrations). No `VERCEL_TOKEN` or `NEON_API_KEY` needed — CLIs are logged in. Kaggle CLI needs `export PATH="$HOME/.local/bin:$PATH"`. Clerk key is `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (not `CLERK_PUBLISHABLE_KEY`).
 2. The UI design is finalized — use the design tokens from `docs/FRONTEND.md` (Bold Modern theme for users, Notion/Stripe dense style for admin)
 3. Mockups exist in `mockups/` for ALL pages (user-facing AND admin). Mockups show the approved layout and visual style. The FRONTEND.md spec has the full behaviors, data fetching, edge cases, modals, and business logic. Use BOTH — mockups for look-and-feel, FRONTEND.md for everything else.
 

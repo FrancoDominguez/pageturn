@@ -41,8 +41,8 @@ export default function BookCard({ book, onClick }: BookCardProps) {
           {book.item_type !== 'book' && (
             <ItemTypeBadge itemType={book.item_type} />
           )}
-          {book.genres[0] && (
-            <GenreTag genre={book.genres[0]} />
+          {(book.genres?.[0] || book.genre) && (
+            <GenreTag genre={(book.genres?.[0] || book.genre)!} />
           )}
         </div>
 

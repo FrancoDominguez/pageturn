@@ -124,7 +124,7 @@ export default function BookDetailPage() {
 
   const { data: book, isLoading: bookLoading } = useBookDetail(id!);
   const { data: reviewsData } = useBookReviews(id!);
-  const { data: finesData } = useMyFines();
+  const { data: finesData } = useMyFines(isSignedIn);
   const checkout = useCheckout();
   const reserve = useReserveBook();
 
@@ -358,7 +358,7 @@ export default function BookDetailPage() {
             <div className="bg-surface rounded-card p-5 shadow-card">
               <div className="text-center mb-4">
                 <span className="font-heading text-5xl font-bold text-text-primary">
-                  {book.avg_rating.toFixed(1)}
+                  {Number(book.avg_rating).toFixed(1)}
                 </span>
                 <div className="mt-1">
                   <StarRating rating={book.avg_rating} size="md" />

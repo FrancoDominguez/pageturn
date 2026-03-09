@@ -26,112 +26,47 @@
 
 ---
 
-## Prerequisites Setup (CLI Commands)
+## Prerequisites Setup — COMPLETED
 
-### 1. Install CLIs
+> All CLIs are installed and authenticated as of 2026-03-08. See `MANUAL_SETUP.md` for full status.
 
-```bash
-# Node.js (if not installed)
-brew install node
+| CLI | Version | Auth | Account |
+|-----|---------|------|---------|
+| `node` | 25.8.0 | N/A | N/A |
+| `neonctl` | 2.21.2 | OAuth | `franco.dominguez343@gmail.com` |
+| `vercel` | latest | OAuth | `francodominguez` |
+| `gcloud` | latest | OAuth | `franco.dominguez343@gmail.com` |
+| `kaggle` | 2.0.0 | API key | `FrancoADominguez` |
 
-# Vercel CLI
-npm i -g vercel
-
-# Neon CLI
-brew install neonctl
-# Alternative: npm i -g neonctl
-
-# Google Cloud CLI
-brew install --cask google-cloud-sdk
-
-# Kaggle CLI
-pip install kaggle
-
-# Python (if not 3.12+)
-brew install python@3.12
-```
-
-### 2. Authenticate CLIs
-
-```bash
-# Neon (using API key from neon.tech dashboard)
-export NEON_API_KEY="your_neon_api_key_here"
-
-# Vercel (using token from vercel.com/account/tokens)
-export VERCEL_TOKEN="your_vercel_token_here"
-
-# Google Cloud
-gcloud auth login
-# When prompted, open browser and authenticate
-
-# Kaggle (place the kaggle.json from kaggle.com/settings)
-mkdir -p ~/.kaggle
-cp ~/Downloads/kaggle.json ~/.kaggle/
-chmod 600 ~/.kaggle/kaggle.json
-```
-
-### 3. Clerk Setup (Manual — Browser Required)
-
-1. Go to https://dashboard.clerk.com
-2. Click "Create application"
-3. Name: "PageTurn"
-4. Enable sign-in methods: Google, Email
-5. Go to "API Keys" in the sidebar
-6. Copy:
-   - `CLERK_PUBLISHABLE_KEY` (starts with `pk_`)
-   - `CLERK_SECRET_KEY` (starts with `sk_`)
-7. Go to "Webhooks" → will be configured after backend deployment
+### Clerk — DONE
+- Application "PageTurn" created (test mode)
+- Keys in `.env`: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`
+- Webhooks: configure after backend deploy
 
 ---
 
-## Infrastructure Provisioning (Automated)
+## Infrastructure Provisioning — COMPLETED
 
-### Create Neon Database
+### Neon Database — DONE
+- Database `neondb` already exists
+- Pooled connection string in `.env` as `DATABASE_URL`
+- Endpoint: `ep-icy-brook-aheeliru-pooler.c-3.us-east-1.aws.neon.tech`
+- No need to create a new project
 
-```bash
-# Create project
-NEON_PROJECT_ID=$(neonctl projects create \
-  --name pageturn \
-  --region-id aws-us-east-2 \
-  --output json \
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['project']['id'])")
+### GCP Project — DONE
+- Project: `valsoft-library-demo-488905` (already created with billing)
+- Cloud Run API: enabled
+- Cloud Build API: enabled
+- Artifact Registry API: enabled
+- Active account: `franco.dominguez343@gmail.com`
 
-echo "Neon Project ID: $NEON_PROJECT_ID"
-
-# Get connection string (pooled for serverless)
-DATABASE_URL=$(neonctl connection-string \
-  --project-id $NEON_PROJECT_ID \
-  --pooled \
-  --output json \
-  | python3 -c "import sys,json; print(json.load(sys.stdin)['connection_string'])")
-
-echo "DATABASE_URL: $DATABASE_URL"
-```
-
-### Create GCP Project + Enable Cloud Run
-
-```bash
-GCP_PROJECT_ID="pageturn-mcp"
-
-# Create project
-gcloud projects create $GCP_PROJECT_ID --name="PageTurn MCP"
-
-# Link billing (use your billing account ID from console.cloud.google.com/billing)
-gcloud billing projects link $GCP_PROJECT_ID \
-  --billing-account=YOUR_BILLING_ACCOUNT_ID
-
-# Set as active project
-gcloud config set project $GCP_PROJECT_ID
-
-# Enable required APIs
-gcloud services enable run.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
-gcloud services enable artifactregistry.googleapis.com
-```
+**Note**: The GCP project ID is `valsoft-library-demo-488905` (not `pageturn-mcp` as originally planned). Update all `gcloud` commands to use this project ID. It's already set as the active project in `gcloud config`.
 
 ### Download Book Dataset
 
 ```bash
+# kaggle requires $HOME/.local/bin in PATH
+export PATH="$HOME/.local/bin:$PATH"
 kaggle datasets download -d dylanjcastillo/7k-books-with-metadata \
   --unzip \
   -p ./data/
@@ -141,32 +76,29 @@ kaggle datasets download -d dylanjcastillo/7k-books-with-metadata \
 
 ## Environment Variables
 
-### `.env.example` (Root)
+### `.env` (Root) — ALREADY CREATED
 
 ```bash
 # === Clerk ===
-CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
-CLERK_SECRET_KEY=sk_test_xxxxx
-CLERK_WEBHOOK_SECRET=whsec_xxxxx
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+CLERK_WEBHOOK_SECRET=              # Set after backend deploy
 
-# === Database ===
-DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require
-
-# === Vercel ===
-VERCEL_TOKEN=xxxxx
+# === Database (Neon — pooled) ===
+DATABASE_URL=postgresql://neondb_owner:...@ep-icy-brook-aheeliru-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require
 
 # === Google Cloud ===
-GCP_PROJECT_ID=pageturn-mcp
-
-# === Neon ===
-NEON_API_KEY=xxxxx
+GCP_PROJECT_ID=valsoft-library-demo-488905
 
 # === App ===
 FRONTEND_URL=http://localhost:5173
 API_URL=http://localhost:8000
 MCP_URL=http://localhost:8080
-CRON_SECRET=xxxxx
+CRON_SECRET=                       # Generate at build time
 ```
+
+> **Note**: No `VERCEL_TOKEN` or `NEON_API_KEY` needed — CLIs are authenticated via OAuth.
+> The Clerk key name uses `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (Next.js convention also works with Vite via alias).
 
 ### Frontend Environment (`.env.local`)
 
@@ -289,11 +221,11 @@ cd mcp/
 
 # Build container image
 gcloud builds submit \
-  --tag gcr.io/$GCP_PROJECT_ID/pageturn-mcp:latest
+  --tag gcr.io/valsoft-library-demo-488905/pageturn-mcp:latest
 
 # Deploy
 gcloud run deploy pageturn-mcp \
-  --image gcr.io/$GCP_PROJECT_ID/pageturn-mcp:latest \
+  --image gcr.io/valsoft-library-demo-488905/pageturn-mcp:latest \
   --region us-central1 \
   --platform managed \
   --allow-unauthenticated \

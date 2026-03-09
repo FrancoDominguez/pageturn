@@ -10,6 +10,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
+        "https://frontend-rho-ruby-13.vercel.app",
         settings.frontend_url,
     ],
     allow_credentials=True,

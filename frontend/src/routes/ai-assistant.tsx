@@ -95,7 +95,7 @@ function GenerateKeyModal({
     if (!name.trim()) return;
     generateKey.mutate(name.trim(), {
       onSuccess: (data: any) => {
-        setGeneratedKey(data.key || data.api_key || 'Key generated successfully');
+        setGeneratedKey(data.api_key?.key || data.key || 'Key generated successfully');
         toast('API key generated!', 'success');
       },
       onError: () => toast('Failed to generate key.', 'error'),

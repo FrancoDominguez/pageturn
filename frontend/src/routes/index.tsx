@@ -112,8 +112,31 @@ function GenreSection({ label, params }: { label: string; params: Record<string,
 
 // ── Hero Section ───────────────────────────────────────────────────────────
 
+function HeroSkeleton() {
+  return (
+    <section className="bg-[#0d1117] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div className="flex-shrink-0">
+            <div className="w-48 md:w-56 aspect-[2/3] rounded-card bg-white/10 animate-pulse" />
+          </div>
+          <div className="flex-1 text-center md:text-left space-y-4 w-full">
+            <div className="h-5 w-24 rounded-pill bg-white/10 animate-pulse" />
+            <div className="h-9 w-3/4 rounded bg-white/10 animate-pulse" />
+            <div className="h-5 w-1/3 rounded bg-white/10 animate-pulse" />
+            <div className="h-4 w-full max-w-lg rounded bg-white/5 animate-pulse" />
+            <div className="h-4 w-2/3 max-w-lg rounded bg-white/5 animate-pulse" />
+            <div className="h-5 w-32 rounded bg-white/10 animate-pulse" />
+            <div className="h-11 w-32 rounded-pill bg-white/10 animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HeroSection() {
-  const { data } = useBookSearch({ staff_picks: 'true', limit: '10' });
+  const { data, isLoading } = useBookSearch({ staff_picks: 'true', limit: '10' });
 
   const heroBook = useMemo(() => {
     if (!data?.books?.length) return null;
@@ -121,6 +144,7 @@ function HeroSection() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.books?.length]);
 
+  if (isLoading) return <HeroSkeleton />;
   if (!heroBook) return null;
 
   return (

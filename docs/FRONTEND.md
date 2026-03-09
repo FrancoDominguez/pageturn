@@ -125,7 +125,7 @@ App
 │           │   │   ├── NavLinks (Browse | My Loans)
 │           │   │   └── AuthSection
 │           │   │       ├── <SignedOut> → SignInButton
-│           │   │       └── <SignedIn> → UserMenu (avatar + dropdown)
+│           │   │       └── <SignedIn> → UserMenu (avatar + dropdown, "Fines & Dues" shows outstanding balance badge if > $0)
 │           │   ├── <Outlet /> (page content)
 │           │   └── Footer (dark #0d1117 bg, logo, tagline, nav links: Browse/My Loans/Privacy/Terms, copyright)
 │           │
@@ -180,7 +180,7 @@ App
 │           │   └── MoreByAuthor (horizontal scroll row, hidden if 1 book)
 │           │
 │           ├── Route "/loans" → LoansPage (ProtectedRoute)
-│           │   ├── SubNav (Loans | History | Fines | Reviews | AI Assistant)
+│           │   ├── SubNav (Loans | History | Fines (badge with $amount if > 0) | Reviews | AI Assistant)
 │           │   ├── PageHeader "My Loans"
 │           │   ├── ReviewNudge (dismissible, most recent unreviewed return)
 │           │   ├── ReadyReservationAlert (green banner per ready reservation)
@@ -205,7 +205,7 @@ App
 │           │           └── CancelLink
 │           │
 │           ├── Route "/history" → HistoryPage (ProtectedRoute)
-│           │   ├── SubNav (Loans | History | Fines | Reviews | AI Assistant)
+│           │   ├── SubNav (Loans | History | Fines (badge with $amount if > 0) | Reviews | AI Assistant)
 │           │   ├── PageHeader "Loan History"
 │           │   ├── ReviewNudge (dismissible, most recent unreviewed return)
 │           │   ├── HistoryTable
@@ -219,11 +219,8 @@ App
 │           │   └── Pagination
 │           │
 │           ├── Route "/fines" → FinesPage (ProtectedRoute)
-│           │   ├── SubNav (Loans | History | Fines | Reviews | AI Assistant)
-│           │   ├── StatCardsRow
-│           │   │   ├── StatCard "Outstanding" (coral)
-│           │   │   ├── StatCard "Total Paid" (green)
-│           │   │   └── StatCard "Total Waived" (gray)
+│           │   ├── SubNav (Loans | History | Fines (badge with $amount if > 0) | Reviews | AI Assistant)
+│           │   ├── OutstandingBalance (single prominent display, not stat cards)
 │           │   ├── WarningBanner (if balance >= $10.00)
 │           │   └── FinesTable
 │           │       └── FineRow (×N)
@@ -234,7 +231,7 @@ App
 │           │           └── DateCell
 │           │
 │           ├── Route "/reviews" → MyReviewsPage (ProtectedRoute)
-│           │   ├── SubNav (Loans | History | Fines | Reviews | AI Assistant)
+│           │   ├── SubNav (Loans | History | Fines (badge with $amount if > 0) | Reviews | AI Assistant)
 │           │   ├── PageHeader "My Reviews"
 │           │   └── ReviewsList
 │           │       └── ReviewCard (×N)
@@ -245,7 +242,7 @@ App
 │           │           └── EditDeleteActions
 │           │
 │           ├── Route "/ai-assistant" → AIAssistantPage (ProtectedRoute)
-│           │   ├── SubNav (Loans | History | Fines | Reviews | AI Assistant)
+│           │   ├── SubNav (Loans | History | Fines (badge with $amount if > 0) | Reviews | AI Assistant)
 │           │   ├── SetupGuide (numbered steps + config code block + Copy Config button)
 │           │   ├── ApiKeyManager
 │           │   │   ├── ApiKeyList
@@ -488,13 +485,14 @@ function getLoanStatus(days_remaining: number): 'active' | 'due-soon' | 'overdue
 
 **Mockup**: `mockups/fines.html` — Stat cards + data table
 
-**Layout**: 3 stat cards in a row at top, optional warning banner, then data table.
+**Layout**: Outstanding balance display at top, optional warning banner, then data table.
 
-**Stat Cards Row** (3-column grid, 16px gap):
-- **Outstanding**: coral top border, coral amount, pending count subtitle
-- **Total Paid**: green top border, green amount, paid count subtitle
-- **Total Waived**: gray top border, gray amount, waived count subtitle
-- Each card: white background, 16px radius, centered text, amount in Space Grotesk 700 32px
+**Outstanding Balance Display**:
+- Single prominent amount: Space Grotesk 700 40px, coral if > $0, green if $0
+- Label above: "Outstanding Balance" (12px uppercase muted)
+- If $0: green amount + "All clear — no outstanding fines" subtitle (green, 14px)
+- If > $0: coral amount + "[N] pending fine(s)" subtitle (muted, 14px)
+- White card, 16px radius, centered, 32px vertical padding
 
 **Warning Banner** (shown when balance >= $10.00): Light red tint background, coral border, warning icon circle + bold message text
 

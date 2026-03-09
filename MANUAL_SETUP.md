@@ -1,141 +1,107 @@
 # PageTurn — Manual Setup Checklist
 
-Everything the implementation agent can't do for you. Complete these steps before starting implementation. Total time: ~20 minutes.
+> **STATUS: COMPLETE** — All steps below have been completed as of 2026-03-08.
+> The `.env` file exists at the project root with all required credentials.
 
 ---
 
-## Step 1: Clerk (Authentication) — ~5 min
+## Step 1: Clerk (Authentication) — DONE
 
-Clerk has no CLI. This must be done in the browser.
-
-1. Go to https://dashboard.clerk.com and sign up / sign in
-2. Click **"Create application"**
-3. Name: **"PageTurn"**
-4. Under **Sign-in methods**, enable:
-   - **Google** (toggle on)
-   - **Email** (toggle on — this enables email + password and magic links)
-5. Click **Create**
-6. Go to **"API Keys"** in the left sidebar
-7. Copy these two values and save them:
-   - `CLERK_PUBLISHABLE_KEY` — starts with `pk_test_` or `pk_live_`
-   - `CLERK_SECRET_KEY` — starts with `sk_test_` or `sk_live_`
-8. **Don't configure webhooks yet** — that happens after the backend is deployed
-
-**Save**: `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`
+- Application created: "PageTurn" (test mode)
+- Sign-in methods: Google + Email enabled
+- Keys saved to `.env`:
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_c29s...`
+  - `CLERK_SECRET_KEY=sk_test_zbp6...`
+- Webhooks: **not yet configured** — happens after backend deploy
 
 ---
 
-## Step 2: Neon Database — ~3 min
+## Step 2: Neon Database — DONE
 
-1. Go to https://neon.tech and sign up / sign in
-2. In the Neon Console, go to **Settings → API Keys**
-3. Click **"Generate API Key"**
-4. Name: "PageTurn CLI"
-5. Copy the API key
-
-**Save**: `NEON_API_KEY`
-
-> The agent will use `neonctl` CLI to create the database project and get the connection string automatically.
+- Account: `franco.dominguez343@gmail.com`
+- Database `neondb` exists on Neon serverless
+- Connection string saved to `.env` as `DATABASE_URL`
+- `neonctl` v2.21.2 installed and authenticated via OAuth (no API key needed)
 
 ---
 
-## Step 3: Vercel — ~3 min
+## Step 3: Vercel — DONE
 
-1. Go to https://vercel.com and sign up / sign in (use GitHub for easiest setup)
-2. Go to **Settings → Tokens** (https://vercel.com/account/tokens)
-3. Click **"Create Token"**
-4. Name: "PageTurn CLI"
-5. Scope: Full Account
-6. Copy the token
-
-**Save**: `VERCEL_TOKEN`
-
-> The agent will use `vercel` CLI to deploy and configure everything.
+- `vercel` CLI installed and logged in as `francodominguez`
+- Authenticated via OAuth (no token needed — CLI is already logged in)
+- No `VERCEL_TOKEN` required; use `vercel` CLI commands directly
 
 ---
 
-## Step 4: Google Cloud Platform (for MCP server) — ~5 min
+## Step 4: Google Cloud Platform — DONE
 
-1. Go to https://console.cloud.google.com
-2. Sign up / sign in with your Google account
-3. Go to **Billing** (https://console.cloud.google.com/billing)
-4. If you don't have a billing account, click **"Create Account"**
-   - Name: "Personal"
-   - Add a payment method (credit/debit card)
-   - Note: Cloud Run free tier covers 2M requests/month — you likely won't be charged
-5. Copy the **Billing Account ID** (format: `XXXXXX-XXXXXX-XXXXXX`, visible on the billing overview page)
-6. Install the gcloud CLI if not already installed:
-   ```bash
-   brew install --cask google-cloud-sdk
-   ```
-7. Authenticate:
-   ```bash
-   gcloud auth login
-   ```
-   (This opens a browser window — sign in with your Google account)
-
-**Save**: `GCP_BILLING_ACCOUNT_ID`
+- Account: `franco.dominguez343@gmail.com` (personal, NOT deck.co)
+- Project: `valsoft-library-demo-488905` (already created with billing)
+- Cloud Run API: enabled
+- Existing Cloud Run service: `valsoft-library-api` in `us-central1`
+- `gcloud` CLI installed and authenticated
+- GCP project ID saved to `.env` as `GCP_PROJECT_ID`
+- **No need to create a new project** — reuse `valsoft-library-demo-488905`
 
 ---
 
-## Step 5: Kaggle (for book data) — ~2 min
+## Step 5: Kaggle — DONE
 
-1. Go to https://www.kaggle.com and sign up / sign in
-2. Go to **Settings** (https://www.kaggle.com/settings)
-3. Scroll to **API** section
-4. Click **"Create New API Token"**
-5. This downloads a `kaggle.json` file
-6. Move it to the right place:
-   ```bash
-   mkdir -p ~/.kaggle
-   mv ~/Downloads/kaggle.json ~/.kaggle/
-   chmod 600 ~/.kaggle/kaggle.json
-   ```
-
-**No values to save** — the file is all the agent needs.
+- Account: `FrancoADominguez`
+- `kaggle` CLI v2.0.0 installed (via pipx, requires `$HOME/.local/bin` in PATH)
+- API credentials at `~/.kaggle/kaggle.json`
+- Verified working: can list datasets
 
 ---
 
-## Summary: Values to Provide
-
-Once you complete the steps above, create a `.env` file in the project root with these values:
+## `.env` File (created at project root)
 
 ```bash
-# Clerk (from Step 1)
-CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
-CLERK_SECRET_KEY=sk_test_xxxxx
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+CLERK_WEBHOOK_SECRET=              # Set after backend deploy
 
-# Neon (from Step 2)
-NEON_API_KEY=xxxxx
+# Database (Neon — pooled connection)
+DATABASE_URL=postgresql://neondb_owner:...@ep-icy-brook-aheeliru-pooler...
 
-# Vercel (from Step 3)
-VERCEL_TOKEN=xxxxx
+# Google Cloud
+GCP_PROJECT_ID=valsoft-library-demo-488905
 
-# GCP (from Step 4)
-GCP_BILLING_ACCOUNT_ID=XXXXXX-XXXXXX-XXXXXX
+# App
+FRONTEND_URL=http://localhost:5173
+API_URL=http://localhost:8000
+MCP_URL=http://localhost:8080
+CRON_SECRET=                       # Generate at build time
 ```
 
-The implementation agent reads from this `.env` and handles the rest:
-- Creates the Neon database and gets the connection string
-- Deploys to Vercel and sets all env vars
-- Creates the GCP project, enables Cloud Run, deploys MCP
-- Downloads the Kaggle dataset
-- Runs migrations and seeds the database
+---
+
+## CLI Authentication Summary
+
+All CLIs are authenticated via OAuth/browser login. No tokens or API keys needed in `.env` for CLI usage.
+
+| CLI | Version | Auth Method |
+|-----|---------|-------------|
+| `neonctl` | 2.21.2 | OAuth (browser) |
+| `vercel` | latest | OAuth (logged in as `francodominguez`) |
+| `gcloud` | latest | OAuth (`franco.dominguez343@gmail.com`) |
+| `kaggle` | 2.0.0 | API key (`~/.kaggle/kaggle.json`) |
+| `node` | 25.8.0 | N/A |
 
 ---
 
 ## Post-Implementation Manual Step
 
-After the backend is deployed, you need to configure the Clerk webhook. **This requires a two-deploy sequence** because of a circular dependency: the backend URL is needed to create the webhook, but the webhook signing secret is needed by the backend.
+After the backend is deployed, configure the Clerk webhook:
 
-1. The agent deploys the backend **first** (without `CLERK_WEBHOOK_SECRET` — the endpoint will exist but reject webhooks)
-2. Get the backend URL from the agent (e.g., `https://pageturn-api.vercel.app`)
+1. The agent deploys the backend **first** (without `CLERK_WEBHOOK_SECRET`)
+2. Get backend URL from the agent (e.g., `https://pageturn-api.vercel.app`)
 3. In Clerk Dashboard → **Webhooks** → **Add Endpoint**
 4. URL: `https://YOUR_BACKEND_URL/api/webhooks/clerk`
 5. Select events: `user.created`, `user.updated`, `user.deleted`
 6. Click **Create**
 7. Copy the **Signing Secret** (starts with `whsec_`)
-8. Tell the agent the signing secret so it can add it to Vercel env vars
-9. The agent **redeploys** the backend with the webhook secret
+8. Tell the agent → it sets `CLERK_WEBHOOK_SECRET` and redeploys
 
-**This is the only post-deployment manual step.** After the second deploy, webhooks will work and user sync will be live.
+**This is the only remaining manual step.**

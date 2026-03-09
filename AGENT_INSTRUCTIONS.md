@@ -21,15 +21,24 @@ The user has been presented with 5 UI design mockups in `mockups/`. They will te
 
 If the user wants to iterate on a design (e.g., "I like Option D but with Option A's font"), create a new mockup HTML combining those elements, let them approve it, then extract the final tokens.
 
-### 2. Manual Setup
-The user needs to complete `MANUAL_SETUP.md` first. Verify they have a `.env` file with:
-- `CLERK_PUBLISHABLE_KEY`
-- `CLERK_SECRET_KEY`
-- `NEON_API_KEY`
-- `VERCEL_TOKEN`
-- `GCP_BILLING_ACCOUNT_ID`
+### 2. Manual Setup — COMPLETE
+All prerequisites are done. The `.env` file exists at the project root with:
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` — Clerk publishable key
+- `CLERK_SECRET_KEY` — Clerk secret key
+- `DATABASE_URL` — Neon pooled connection string (database `neondb` already exists)
+- `GCP_PROJECT_ID` — `valsoft-library-demo-488905` (project already created with Cloud Run enabled)
 
-If any are missing, point them to the specific step in `MANUAL_SETUP.md`.
+CLIs are all authenticated via OAuth (no tokens needed):
+- `neonctl` — OAuth as `franco.dominguez343@gmail.com`
+- `vercel` — logged in as `francodominguez`
+- `gcloud` — `franco.dominguez343@gmail.com`, project `valsoft-library-demo-488905`
+- `kaggle` — API key for `FrancoADominguez` (requires `$HOME/.local/bin` in PATH)
+
+**Important differences from original plan**:
+- GCP project is `valsoft-library-demo-488905` (not `pageturn-mcp`) — do NOT create a new project
+- Clerk key uses `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (not `CLERK_PUBLISHABLE_KEY`)
+- No `VERCEL_TOKEN` or `NEON_API_KEY` — use CLI commands directly (already authenticated)
+- Neon database already exists — do NOT create a new project, just run migrations against existing `DATABASE_URL`
 
 ---
 

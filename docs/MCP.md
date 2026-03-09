@@ -17,7 +17,7 @@ Claude Desktop / AI Agent
     │     └── Tools: search, loans, reservations, reviews, fines
     │
     └── Admin MCP: POST https://mcp.pageturn.app/admin
-          └── Tools: all user tools + book CRUD, user mgmt, fine waive
+          └── Tools: all user tools + book CRUD, inventory mgmt, user mgmt, fine waive
 ```
 
 Both MCP servers run in the same Cloud Run container. The route determines which tool set is exposed. Auth determines which user's data is accessed.
@@ -282,7 +282,7 @@ Get the user's aggregated reading profile for personalized recommendations.
 
 ## Admin MCP Tools (Additional)
 
-All 12 user tools above are available, plus:
+All 12 user tools above are available, plus 10 admin tools:
 
 ### `create_book`
 Add a new book to the catalogue.
@@ -322,6 +322,22 @@ Edit an existing book's metadata.
 | (any book field) | various | no | Any updatable field |
 
 **API Call**: `PUT /api/admin/books/{book_id}`
+
+---
+
+### `add_copies`
+Add copies to an existing book to increase inventory.
+
+**Parameters**:
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| book_id | string | yes | UUID of the book |
+| count | int | yes | Number of copies to add |
+| condition | string | no | Condition of new copies: new, good, fair, poor (default "new") |
+
+**Returns**: Number of copies created and new total copy count.
+
+**API Call**: `POST /api/admin/books/{book_id}/copies` body: `{"count": count, "condition": condition}`
 
 ---
 
