@@ -34,6 +34,14 @@ export interface BookCopy {
   status: 'available' | 'checked_out' | 'reserved' | 'damaged' | 'lost';
   condition: 'new' | 'good' | 'fair' | 'poor';
   barcode: string;
+  current_borrower?: {
+    user_id: string;
+    name: string;
+    email: string;
+    due_date: string;
+    loan_id: string;
+    status: string;
+  };
 }
 
 export interface BookSummary {

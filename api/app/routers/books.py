@@ -61,7 +61,8 @@ async def get_book_detail(
     db: AsyncSession = Depends(get_db),
 ):
     user_id = user.id if user else None
-    return await book_service.get_book_detail(db, book_id, user_id=user_id)
+    is_admin = user.role == "admin" if user else False
+    return await book_service.get_book_detail(db, book_id, user_id=user_id, is_admin=is_admin)
 
 
 @router.get("/api/books/{book_id}/reviews", response_model=BookReviewsResponse)

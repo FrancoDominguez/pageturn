@@ -34,6 +34,7 @@ class BookCopyResponse(BaseModel):
     status: str
     condition: str
     barcode: str
+    current_borrower: dict | None = None
 
 
 class BookDetailResponse(BaseModel):

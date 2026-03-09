@@ -5,7 +5,7 @@ import { apiFetch } from '../../lib/api';
 import { useToast } from '../../components/Toast';
 import Modal from '../../components/Modal';
 import QueryError from '../../components/QueryError';
-import type { Book, BooksResponse } from '../../types';
+import type { Book, BookDetail, BooksResponse } from '../../types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -98,6 +98,14 @@ export default function AdminBooksPage() {
 
   const books = data?.books ?? [];
   const totalPages = data?.pages ?? 1;
+
+  // Fetch book detail when editing (for borrower info on copies)
+  const { data: bookDetail } = useQuery({
+    queryKey: ['book', editingBook?.id],
+    queryFn: () => apiFetch<BookDetail>(`/api/books/${editingBook!.id}`),
+    enabled: !!editingBook,
+  });
+  const checkedOutCopies = bookDetail?.copies.filter((c) => c.current_borrower) ?? [];
 
   // Create/update mutation
   const saveMutation = useMutation({
@@ -571,6 +579,41 @@ export default function AdminBooksPage() {
               </div>
             )}
           </div>
+
+          {/* Current Loans (edit mode only) */}
+          {editingBook && checkedOutCopies.length > 0 && (
+            <div className="border-t border-gray-100 pt-4">
+              <label className="block text-[11px] uppercase tracking-wider text-gray-500 mb-2">
+                Currently Checked Out ({checkedOutCopies.length})
+              </label>
+              <div className="space-y-2">
+                {checkedOutCopies.map((copy) => (
+                  <div
+                    key={copy.id}
+                    className={clsx(
+                      'flex items-center justify-between px-3 py-2 rounded-[6px] text-[13px]',
+                      copy.current_borrower!.status === 'overdue'
+                        ? 'bg-red-50 border border-red-100'
+                        : 'bg-gray-50 border border-gray-100',
+                    )}
+                  >
+                    <div className="min-w-0">
+                      <span className="font-medium text-gray-900">{copy.current_borrower!.name}</span>
+                      <span className="text-gray-400 ml-1.5">{copy.current_borrower!.email}</span>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-3">
+                      <span className={clsx(
+                        'text-[12px]',
+                        copy.current_borrower!.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-500',
+                      )}>
+                        Due {new Date(copy.current_borrower!.due_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-2 pt-2">

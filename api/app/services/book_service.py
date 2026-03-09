@@ -11,11 +11,54 @@ from app.models.book import Book, BookCopy
 from app.models.loan import Loan
 from app.models.reservation import Reservation
 from app.models.review import Review
+from app.models.user import User
 from app.schemas.book import BookCreate, BookUpdate
 
 
+async def _build_copies_list(db: AsyncSession, copies: list, is_admin: bool) -> list[dict]:
+    """Build copies list, enriching with borrower info for admins."""
+    copy_dicts = []
+    # If admin, batch-fetch active loans with users for all checked-out copies
+    borrower_map: dict[uuid.UUID, dict] = {}
+    if is_admin:
+        checked_out_ids = [c.id for c in copies if c.status == "checked_out"]
+        if checked_out_ids:
+            stmt = (
+                select(Loan, User)
+                .join(User, Loan.user_id == User.id)
+                .where(
+                    and_(
+                        Loan.book_copy_id.in_(checked_out_ids),
+                        Loan.status.in_(["active", "overdue"]),
+                    )
+                )
+            )
+            result = await db.execute(stmt)
+            for loan, user in result.all():
+                borrower_map[loan.book_copy_id] = {
+                    "user_id": str(user.id),
+                    "name": f"{user.first_name or ''} {user.last_name or ''}".strip() or user.email,
+                    "email": user.email,
+                    "due_date": loan.due_date.isoformat(),
+                    "loan_id": str(loan.id),
+                    "status": loan.status,
+                }
+
+    for c in copies:
+        entry = {
+            "id": c.id,
+            "status": c.status,
+            "condition": c.condition,
+            "barcode": c.barcode,
+        }
+        if is_admin and c.id in borrower_map:
+            entry["current_borrower"] = borrower_map[c.id]
+        copy_dicts.append(entry)
+    return copy_dicts
+
+
 async def get_book_detail(
-    db: AsyncSession, book_id: uuid.UUID, user_id: uuid.UUID | None = None
+    db: AsyncSession, book_id: uuid.UUID, user_id: uuid.UUID | None = None, is_admin: bool = False
 ) -> dict:
     """Get full book detail including copies, availability, and user context."""
 
@@ -139,15 +182,7 @@ async def get_book_detail(
         "rating_count": book.rating_count,
         "is_staff_pick": book.is_staff_pick,
         "staff_pick_note": book.staff_pick_note,
-        "copies": [
-            {
-                "id": c.id,
-                "status": c.status,
-                "condition": c.condition,
-                "barcode": c.barcode,
-            }
-            for c in copies
-        ],
+        "copies": await _build_copies_list(db, copies, is_admin),
         "available_copies": available_copies,
         "total_copies": total_copies,
         "earliest_return_date": earliest_return,
