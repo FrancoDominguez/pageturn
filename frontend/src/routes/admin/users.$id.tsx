@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import { apiFetch } from '../../lib/api';
 import { useToast } from '../../components/Toast';
+import QueryError from '../../components/QueryError';
 import type { Loan, Fine, MyReview } from '../../types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ export default function AdminUserDetailPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Loans');
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin', 'users', id],
     queryFn: () => apiFetch<AdminUserDetail>(`/api/admin/users/${id}`),
     enabled: !!id,
@@ -90,6 +91,14 @@ export default function AdminUserDetailPage() {
     },
     onError: () => toast('Failed to waive fine', 'error'),
   });
+
+  if (isError) {
+    return (
+      <div className="text-[13px] px-6 py-6">
+        <QueryError message="Failed to load user details." onRetry={() => refetch()} />
+      </div>
+    );
+  }
 
   if (isLoading || !user) {
     return (

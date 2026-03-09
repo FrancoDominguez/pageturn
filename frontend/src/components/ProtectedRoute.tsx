@@ -9,10 +9,10 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children, adminOnly }: ProtectedRouteProps) {
   const { isSignedIn, isLoaded } = useAuth();
-  const { data: profile, isLoading: profileLoading } = useUserProfile();
+  const { data: profile, isLoading: profileLoading, isError: profileError } = useUserProfile();
 
   // Wait for Clerk to initialize
-  if (!isLoaded || (isSignedIn && profileLoading)) {
+  if (!isLoaded || (isSignedIn && profileLoading && !profileError)) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />

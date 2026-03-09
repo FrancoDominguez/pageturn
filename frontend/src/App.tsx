@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import { ToastProvider } from './components/Toast';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './routes/index';
@@ -21,7 +22,7 @@ function App() {
   return (
     <ToastProvider>
       <Routes>
-        <Route element={<Layout />}>
+        <Route element={<ErrorBoundary><Layout /></ErrorBoundary>}>
           <Route index element={<HomePage />} />
           <Route path="/books/:id" element={<BookDetailPage />} />
           <Route
@@ -84,9 +85,11 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute adminOnly>
-              <AdminLayout />
-            </ProtectedRoute>
+            <ErrorBoundary>
+              <ProtectedRoute adminOnly>
+                <AdminLayout />
+              </ProtectedRoute>
+            </ErrorBoundary>
           }
         >
           <Route index element={<AdminDashboard />} />

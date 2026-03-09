@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../../lib/api';
+import QueryError from '../../components/QueryError';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -18,7 +19,7 @@ interface AdminStats {
 // ── Admin Dashboard ───────────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin', 'stats'],
     queryFn: () => apiFetch<AdminStats>('/api/admin/stats'),
   });
@@ -55,6 +56,10 @@ export default function AdminDashboard() {
       <div className="px-6 py-6">
         <h1 className="font-heading font-bold text-xl text-gray-900 mb-1">Dashboard</h1>
         <p className="text-gray-500 mb-6">Overview of your library system</p>
+
+        {isError && (
+          <QueryError message="Failed to load dashboard stats." onRetry={() => refetch()} />
+        )}
 
         {/* Quick actions */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

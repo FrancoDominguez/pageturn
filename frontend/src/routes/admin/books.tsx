@@ -4,6 +4,7 @@ import { clsx } from 'clsx';
 import { apiFetch } from '../../lib/api';
 import { useToast } from '../../components/Toast';
 import Modal from '../../components/Modal';
+import QueryError from '../../components/QueryError';
 import type { Book, BooksResponse } from '../../types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -82,7 +83,7 @@ export default function AdminBooksPage() {
   });
 
   // Fetch books
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin', 'books', page, search, itemType],
     queryFn: () =>
       apiFetch<BooksResponse>('/api/books', {
@@ -276,7 +277,13 @@ export default function AdminBooksPage() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isError ? (
+                <tr>
+                  <td colSpan={7}>
+                    <QueryError message="Failed to load books." onRetry={() => refetch()} />
+                  </td>
+                </tr>
+              ) : isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-gray-100 h-[44px]">
                     <td className="px-4" colSpan={7}>

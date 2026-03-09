@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { apiFetch } from '../../lib/api';
+import QueryError from '../../components/QueryError';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -58,7 +59,7 @@ export default function AdminUsersPage() {
   });
 
   // Fetch users
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin', 'users', page, search, filter],
     queryFn: () =>
       apiFetch<AdminUsersResponse>('/api/admin/users', {
@@ -147,7 +148,13 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isError ? (
+                <tr>
+                  <td colSpan={6}>
+                    <QueryError message="Failed to load users." onRetry={() => refetch()} />
+                  </td>
+                </tr>
+              ) : isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-gray-100 h-[44px]">
                     <td className="px-4" colSpan={6}>

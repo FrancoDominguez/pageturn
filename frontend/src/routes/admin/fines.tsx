@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import { apiFetch } from '../../lib/api';
 import { useToast } from '../../components/Toast';
+import QueryError from '../../components/QueryError';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -72,7 +73,7 @@ export default function AdminFinesPage() {
   });
 
   // Fetch fines
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin', 'fines', page, status],
     queryFn: () =>
       apiFetch<AdminFinesResponse>('/api/admin/fines', {
@@ -167,7 +168,13 @@ export default function AdminFinesPage() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isError ? (
+                <tr>
+                  <td colSpan={7}>
+                    <QueryError message="Failed to load fines." onRetry={() => refetch()} />
+                  </td>
+                </tr>
+              ) : isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-b border-gray-100 h-[44px]">
                     <td className="px-4" colSpan={7}>
