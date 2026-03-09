@@ -71,7 +71,7 @@ async def get_book_detail(
     user_loan = None
     user_reservation = None
     if user_id:
-        # Active loan for this book by this user
+        # Most recent loan for this book by this user (active/overdue first, then returned)
         user_loan_stmt = (
             select(Loan)
             .join(BookCopy, Loan.book_copy_id == BookCopy.id)
@@ -79,15 +79,22 @@ async def get_book_detail(
                 and_(
                     BookCopy.book_id == book_id,
                     Loan.user_id == user_id,
-                    Loan.status == "active",
+                    Loan.status.in_(["active", "overdue", "returned"]),
                 )
             )
+            .order_by(
+                # Prioritize active/overdue over returned
+                (Loan.status == "returned").asc(),
+                Loan.checked_out_at.desc(),
+            )
+            .limit(1)
         )
         user_loan_result = await db.execute(user_loan_stmt)
         loan_obj = user_loan_result.scalar_one_or_none()
         if loan_obj:
             user_loan = {
                 "id": str(loan_obj.id),
+                "status": loan_obj.status,
                 "due_date": loan_obj.due_date.isoformat(),
                 "renewed_count": loan_obj.renewed_count,
             }

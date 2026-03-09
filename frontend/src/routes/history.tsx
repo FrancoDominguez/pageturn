@@ -157,7 +157,7 @@ function MonthGroup({ month, loans }: { month: string; loans: LoanHistory[] }) {
               <StarRating rating={loan.user_review.rating} size="sm" />
             ) : loan.returned_at ? (
               <Link
-                to={`/books/${loan.book.id}`}
+                to={`/books/${loan.book.id}?review=true`}
                 className="text-sm font-medium text-secondary hover:opacity-80 transition-opacity"
               >
                 Write Review

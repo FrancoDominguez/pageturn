@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { SignedIn, useAuth } from '@clerk/clerk-react';
 import { useBookDetail, useBookReviews, useCheckout, useReserveBook, useBookSearch } from '../hooks/useBooks';
 import { useCreateReview } from '../hooks/useReviews';
@@ -119,8 +119,10 @@ function MetaItem({ label, value }: { label: string; value?: string | number | n
 export default function BookDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isSignedIn } = useAuth();
   const { toast } = useToast();
+  const reviewFormRef = useRef<HTMLDivElement>(null);
 
   const { data: book, isLoading: bookLoading } = useBookDetail(id!);
   const { data: reviewsData } = useBookReviews(id!);
@@ -133,6 +135,13 @@ export default function BookDetailPage() {
     book ? { author: book.author, limit: '10' } : { limit: '0' },
   );
   const authorBooks = moreByAuthor?.books?.filter((b) => b.id !== id) ?? [];
+
+  // Scroll to review form when coming from history page
+  useEffect(() => {
+    if (searchParams.get('review') === 'true' && reviewFormRef.current) {
+      reviewFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [searchParams, book]);
 
   // Action state
   const [actionBanner, setActionBanner] = useState<{
@@ -197,7 +206,7 @@ export default function BookDetailPage() {
     );
   }
 
-  const canCheckOut = book.available_copies > 0 && !book.user_loan;
+  const canCheckOut = book.available_copies > 0 && (!book.user_loan || book.user_loan.status === 'returned');
   const canReserve = book.available_copies === 0 && !book.user_reservation;
   const hasReturnedLoan = book.user_loan?.status === 'returned';
 
@@ -383,8 +392,8 @@ export default function BookDetailPage() {
           {/* Review list + form */}
           <div className="flex-1 min-w-0">
             <SignedIn>
-              {hasReturnedLoan && !reviewsData?.reviews.some(() => false) && (
-                <div className="mb-6">
+              {hasReturnedLoan && (
+                <div className="mb-6" ref={reviewFormRef}>
                   <ReviewForm bookId={id!} />
                 </div>
               )}
