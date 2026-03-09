@@ -137,7 +137,7 @@ export default function AdminUserDetailPage() {
           </div>
           <div className="px-8">
             <div className="text-[11px] uppercase tracking-wider text-gray-500">Outstanding Fines</div>
-            <div className="text-2xl font-heading font-bold text-primary">${user.outstanding_fines.toFixed(2)}</div>
+            <div className="text-2xl font-heading font-bold text-primary">${Number(user.outstanding_fines).toFixed(2)}</div>
           </div>
           <div className="px-8">
             <div className="text-[11px] uppercase tracking-wider text-gray-500">Reviews</div>
@@ -338,7 +338,7 @@ export default function AdminUserDetailPage() {
                           'font-medium',
                           fine.status === 'pending' ? 'text-primary' : 'text-gray-400',
                         )}>
-                          ${fine.amount.toFixed(2)}
+                          ${Number(fine.amount).toFixed(2)}
                         </span>
                       </td>
                       <td className="px-4">

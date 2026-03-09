@@ -93,7 +93,7 @@ export default function AdminFinesPage() {
   });
 
   function handleWaive(fine: AdminFine) {
-    if (window.confirm(`Waive $${fine.amount.toFixed(2)} fine for "${fine.book_title}"?`)) {
+    if (window.confirm(`Waive $${Number(fine.amount).toFixed(2)} fine for "${fine.book_title}"?`)) {
       waiveMutation.mutate(fine.id);
     }
   }
@@ -106,7 +106,7 @@ export default function AdminFinesPage() {
           <div className="pr-8">
             <div className="text-[11px] uppercase tracking-wider text-gray-500">Outstanding</div>
             <div className="text-2xl font-heading font-bold text-primary">
-              {data ? `$${data.total_outstanding_amount.toFixed(2)}` : '--'}
+              {data ? `$${Number(data.total_outstanding_amount).toFixed(2)}` : '--'}
             </div>
           </div>
           <div className="px-8">
@@ -195,7 +195,7 @@ export default function AdminFinesPage() {
                           'font-medium',
                           fine.status === 'pending' ? 'text-primary' : 'text-gray-400',
                         )}>
-                          ${fine.amount.toFixed(2)}
+                          ${Number(fine.amount).toFixed(2)}
                         </span>
                       </td>
                       <td className="px-4">

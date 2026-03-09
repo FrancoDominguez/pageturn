@@ -34,7 +34,7 @@ export default function SubNav({ fineAmount }: SubNavProps) {
               {link.label}
               {link.showBadge && fineAmount !== undefined && fineAmount > 0 && (
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-pill bg-primary text-white text-[10px] font-semibold leading-none">
-                  ${fineAmount.toFixed(2)}
+                  ${Number(fineAmount).toFixed(2)}
                 </span>
               )}
             </NavLink>

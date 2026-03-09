@@ -202,7 +202,7 @@ export default function AdminUsersPage() {
                     <td className="px-4 text-gray-600">{user.active_loan_count}</td>
                     <td className="px-4">
                       {user.outstanding_fines > 0 ? (
-                        <span className="text-primary font-medium">${user.outstanding_fines.toFixed(2)}</span>
+                        <span className="text-primary font-medium">${Number(user.outstanding_fines).toFixed(2)}</span>
                       ) : (
                         <span className="text-gray-300">$0.00</span>
                       )}

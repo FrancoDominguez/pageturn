@@ -320,7 +320,7 @@ export default function AdminBooksPage() {
                     </td>
                     <td className="px-4 text-gray-600">
                       {book.avg_rating > 0 ? (
-                        <span>{book.avg_rating.toFixed(1)} <span className="text-gray-400">({book.rating_count})</span></span>
+                        <span>{Number(book.avg_rating).toFixed(1)} <span className="text-gray-400">({book.rating_count})</span></span>
                       ) : (
                         <span className="text-gray-300">--</span>
                       )}

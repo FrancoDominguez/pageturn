@@ -66,7 +66,7 @@ export default function FinesPage() {
             totalOutstanding > 0 ? 'text-primary' : 'text-success'
           }`}
         >
-          ${totalOutstanding.toFixed(2)}
+          ${Number(totalOutstanding).toFixed(2)}
         </p>
       </div>
 
@@ -121,7 +121,7 @@ export default function FinesPage() {
                           fine.status === 'pending' ? 'text-primary' : 'text-text-muted'
                         }`}
                       >
-                        ${fine.amount.toFixed(2)}
+                        ${Number(fine.amount).toFixed(2)}
                       </span>
                     </td>
                     <td className="px-4 py-3">

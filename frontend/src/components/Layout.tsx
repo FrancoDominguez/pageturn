@@ -101,7 +101,7 @@ function UserButtonWithMenu() {
         <UserButton.Link label="My Loans" labelIcon={<LoanIcon />} href="/loans" />
         <UserButton.Link label="History" labelIcon={<HistoryIcon />} href="/history" />
         <UserButton.Link
-          label={fineAmount > 0 ? `Fines & Dues ($${fineAmount.toFixed(2)})` : 'Fines & Dues'}
+          label={fineAmount > 0 ? `Fines & Dues ($${Number(fineAmount).toFixed(2)})` : 'Fines & Dues'}
           labelIcon={<FineIcon />}
           href="/fines"
         />
