@@ -298,7 +298,7 @@ export default function AdminUserDetailPage() {
                         </span>
                       </td>
                       <td className="px-4 text-right">
-                        <span className="inline-flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="inline-flex items-center gap-2">
                           <button
                             type="button"
                             onClick={() => returnMutation.mutate(loan.id)}
@@ -387,7 +387,7 @@ export default function AdminUserDetailPage() {
                               type="button"
                               onClick={() => waiveMutation.mutate(fine.id)}
                               disabled={waiveMutation.isPending}
-                              className="opacity-0 group-hover:opacity-100 text-primary text-[13px] font-medium hover:underline cursor-pointer transition-opacity"
+                              className="text-primary text-[13px] font-medium hover:underline cursor-pointer"
                             >
                               Waive
                             </button>
