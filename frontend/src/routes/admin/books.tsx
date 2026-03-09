@@ -338,7 +338,7 @@ export default function AdminBooksPage() {
                       )}
                     </td>
                     <td className="px-4 text-right">
-                      <span className="inline-flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="inline-flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => openEdit(book)}

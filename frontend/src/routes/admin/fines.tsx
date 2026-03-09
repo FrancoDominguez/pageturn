@@ -213,7 +213,7 @@ export default function AdminFinesPage() {
                             type="button"
                             onClick={() => handleWaive(fine)}
                             disabled={waiveMutation.isPending}
-                            className="opacity-0 group-hover:opacity-100 text-primary text-[13px] font-medium hover:underline cursor-pointer transition-opacity"
+                            className="text-primary text-[13px] font-medium hover:underline cursor-pointer"
                           >
                             Waive
                           </button>
