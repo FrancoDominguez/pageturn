@@ -13,9 +13,8 @@ interface AdminUser {
   first_name?: string;
   last_name?: string;
   role: 'user' | 'admin';
-  active_loan_count: number;
+  active_loans: number;
   outstanding_fines: number;
-  is_blocked: boolean;
   created_at: string;
 }
 
@@ -23,22 +22,13 @@ interface AdminUsersResponse {
   users: AdminUser[];
   total: number;
   page: number;
-  pages: number;
 }
 
-interface AdminUsersStats {
-  total_users: number;
-  admins: number;
-  active_borrowers: number;
-  blocked: number;
-}
+const filterTabs = ['All', 'Admins'] as const;
 
-const filterTabs = ['All', 'Admins', 'Blocked'] as const;
-
-const filterMap: Record<string, string | undefined> = {
+const roleMap: Record<string, string | undefined> = {
   All: undefined,
   Admins: 'admin',
-  Blocked: 'blocked',
 };
 
 // ── Admin Users Page ──────────────────────────────────────────────────────────
@@ -49,31 +39,26 @@ export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<string>('All');
+  const limit = 25;
 
-  const filter = filterMap[activeTab];
-
-  // Fetch stats
-  const { data: stats } = useQuery({
-    queryKey: ['admin', 'users', 'stats'],
-    queryFn: () => apiFetch<AdminUsersStats>('/api/admin/users/stats'),
-  });
+  const role = roleMap[activeTab];
 
   // Fetch users
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['admin', 'users', page, search, filter],
+    queryKey: ['admin', 'users', page, search, role],
     queryFn: () =>
       apiFetch<AdminUsersResponse>('/api/admin/users', {
         params: {
           page: String(page),
-          limit: '25',
+          limit: String(limit),
           q: search || undefined,
-          filter,
+          role,
         },
       }),
   });
 
   const users = data?.users ?? [];
-  const totalPages = data?.pages ?? 1;
+  const totalPages = data ? Math.max(1, Math.ceil(data.total / limit)) : 1;
 
   function displayName(u: AdminUser): string {
     const parts = [u.first_name, u.last_name].filter(Boolean);
@@ -87,19 +72,7 @@ export default function AdminUsersPage() {
         <div className="flex items-center divide-x divide-gray-200">
           <div className="pr-8">
             <div className="text-[11px] uppercase tracking-wider text-gray-500">Total Users</div>
-            <div className="text-2xl font-heading font-bold">{stats?.total_users?.toLocaleString() ?? '--'}</div>
-          </div>
-          <div className="px-8">
-            <div className="text-[11px] uppercase tracking-wider text-gray-500">Admins</div>
-            <div className="text-2xl font-heading font-bold">{stats?.admins?.toLocaleString() ?? '--'}</div>
-          </div>
-          <div className="px-8">
-            <div className="text-[11px] uppercase tracking-wider text-gray-500">Active Borrowers</div>
-            <div className="text-2xl font-heading font-bold">{stats?.active_borrowers?.toLocaleString() ?? '--'}</div>
-          </div>
-          <div className="px-8">
-            <div className="text-[11px] uppercase tracking-wider text-gray-500">Blocked</div>
-            <div className="text-2xl font-heading font-bold text-red-600">{stats?.blocked?.toLocaleString() ?? '--'}</div>
+            <div className="text-2xl font-heading font-bold">{data?.total?.toLocaleString() ?? '--'}</div>
           </div>
         </div>
       </div>
@@ -176,15 +149,7 @@ export default function AdminUsersPage() {
                     className="border-b border-gray-100 h-[44px] hover:bg-gray-50 cursor-pointer group"
                   >
                     <td className="px-4">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">{displayName(user)}</span>
-                        {user.is_blocked && (
-                          <span className="inline-flex items-center gap-1 text-[11px] text-red-600">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                            Blocked
-                          </span>
-                        )}
-                      </div>
+                      <span className="font-medium text-gray-900">{displayName(user)}</span>
                     </td>
                     <td className="px-4 text-gray-600">{user.email}</td>
                     <td className="px-4">
@@ -199,9 +164,9 @@ export default function AdminUsersPage() {
                         {user.role === 'admin' ? 'Admin' : 'User'}
                       </span>
                     </td>
-                    <td className="px-4 text-gray-600">{user.active_loan_count}</td>
+                    <td className="px-4 text-gray-600">{user.active_loans}</td>
                     <td className="px-4">
-                      {user.outstanding_fines > 0 ? (
+                      {Number(user.outstanding_fines) > 0 ? (
                         <span className="text-primary font-medium">${Number(user.outstanding_fines).toFixed(2)}</span>
                       ) : (
                         <span className="text-gray-300">$0.00</span>
